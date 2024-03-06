@@ -68,7 +68,7 @@ fun ReceiptItem(
 fun RemoveSaleItemButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(
-            painter = painterResource(id = R.drawable.remove_circle),
+            painter = painterResource(id = R.drawable.twotone_remove_circle),
             contentDescription = "Remove icon",
             modifier = Modifier.size(48.dp),
         )
