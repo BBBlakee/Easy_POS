@@ -19,36 +19,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductScreen(modifier: Modifier = Modifier) {
+fun AddProductScreen(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
+) {
 
 
     var productName: String by remember { mutableStateOf("") }
     var productPrice: String by remember { mutableStateOf("") }
 
-    Box {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(text = stringResource(R.string.add_product_name))
-            TextField(value = productName, onValueChange = { productName = it })
-            Text(text = stringResource(R.string.add_product_price))
-            TextField(
-                value = productPrice, onValueChange = { productPrice = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            Row(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                horizontalArrangement = Arrangement.SpaceEvenly
+    Dialog(onDismissRequest = onDismissRequest) {
+        Box {
+            Column(
+                verticalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = stringResource(R.string.button_cancel))
-                }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = stringResource(R.string.button_confirm))
+                Text(text = stringResource(R.string.add_product_name))
+                TextField(value = productName, onValueChange = { productName = it })
+                Text(text = stringResource(R.string.add_product_price))
+                TextField(
+                    value = productPrice, onValueChange = { productPrice = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+                Row(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.button_cancel))
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.button_confirm))
+                    }
                 }
             }
         }

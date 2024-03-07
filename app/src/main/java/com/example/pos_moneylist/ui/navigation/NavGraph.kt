@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Edit
+import androidx.compose.material.icons.twotone.Close
+import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,7 @@ import com.example.pos_moneylist.ui.home.HomeDestination
 import com.example.pos_moneylist.ui.home.HomeScreen
 import com.example.pos_moneylist.ui.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.receiptArea.ReceiptAreaViewModel
+import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +42,7 @@ fun MoneyListNavHost(
     val productAreaViewModel: ProductAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val receiptAreaViewModel: ReceiptAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
 
-    var showEditScreen: Boolean by remember { mutableStateOf(false) }
+    var showSettingsScreen: Boolean by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController, startDestination = HomeDestination.route, modifier = modifier
@@ -48,12 +50,20 @@ fun MoneyListNavHost(
         composable(route = HomeDestination.route) {
             Scaffold(topBar = {
                 TopAppBar(title = { Text(stringResource(R.string.topAppBar_title)) }, actions = {
-                    IconButton(onClick = { showEditScreen = true }) {
-                        Icon(
-                            Icons.TwoTone.Edit,
-                            modifier = Modifier.size(48.dp),
-                            contentDescription = "Edit product list button"
-                        )
+                    IconButton(onClick = { showSettingsScreen = !showSettingsScreen }) {
+                        if (!showSettingsScreen) {
+                            Icon(
+                                Icons.TwoTone.Settings,
+                                modifier = Modifier.size(48.dp),
+                                contentDescription = "Edit product list button"
+                            )
+                        } else {
+                            Icon(
+                                Icons.TwoTone.Close,
+                                modifier = Modifier.size(48.dp),
+                                contentDescription = "Close button"
+                            )
+                        }
                     }
                 })
             }) { innerPadding ->
@@ -62,6 +72,9 @@ fun MoneyListNavHost(
                         productAreaViewModel = productAreaViewModel,
                         receiptAreaViewModel = receiptAreaViewModel,
                     )
+                    if (showSettingsScreen) {
+                        SettingsScreen()
+                    }
                 }
             }
         }
