@@ -1,0 +1,26 @@
+@startuml SaleItemList
+
+skinparam ClassAttributeIconSize 0
+!include ./saleItem.puml
+
+class SaleItemList {
+    + saleItemList : ArrayList<SaleItem> 
+    + total : Double = 0.0
+
+    + add(item : SaleItem) : void
+    + remove(item : SaleItem) : void
+    + removeAll() : void
+    + iterator() : Iterator<SaleItem> {override}
+}
+
+class SaleItemList implements Iterable
+
+note right of SaleItemList::remove
+    item.decrement()
+    wenn Itemmenge == 0 
+    lösche item aus Liste 
+end note
+
+SaleItemList "1" *-- "*" SaleItem
+
+@enduml

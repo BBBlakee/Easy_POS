@@ -10,4 +10,8 @@ class SettingsScreenViewModel : ViewModel() {
     fun addProduct(product: Product) {
         productList.add(product)
     }
+
+    fun contains(product: Product): Boolean {
+        return productList.contains(product = product)
+    }
 }

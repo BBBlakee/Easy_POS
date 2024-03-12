@@ -1,0 +1,53 @@
+@startuml (id=ReceiptArea) ReceiptArea
+
+skinparam ClassAttributeIconSize 0
+skinparam class {
+    BackgroundColor<<Composable>> Wheat
+}
+
+class ReceiptArea <<Composable>>{   
+    ..Parameter..
+    + saleItemList : SaleItemList
+    ..Variable..
+    + currency : String = EUR
+    + total : Double = 0.0
+    __
+    + createReceiptItem(saleItem : SaleItem) : void
+    + resetReceiptArea() : void
+}
+
+class ReceiptItem <<Composable>> {
+    ..Parameter..
+    - saleItem : SaleItem
+    ..Variable..
+    + name : String
+    + amount : Int
+    __
+    + decrement() : void 
+}
+
+class DecrementButton <<Composable>> {
+    ..Parameter..
+    - onClick : Lambda = decrement()
+}
+
+note right of DecrementButton::onClick
+    ruft decrement() auf 
+    um Menge um 1 zu reduzieren 
+end note
+
+class ResetButton <<Composable>> {
+    ..Parameter..
+    - onClick : Lambda = resetReceiptArea() 
+}
+
+note left of ResetButton::onClick
+    ruft resetReceiptArea() auf
+    um SaleItemListe zu leeren
+end note
+
+ReceiptArea "1" o-- "*" ReceiptItem
+ReceiptArea "1" o-down- "1" ResetButton
+ReceiptItem "1" *-down- "1" DecrementButton
+
+@enduml

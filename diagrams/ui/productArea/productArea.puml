@@ -1,0 +1,32 @@
+@startuml (id=ProductArea) ProductArea
+
+skinparam ClassAttributeIconSize 0
+skinparam class {
+    BackgroundColor<<Composable>> Wheat
+}
+
+class ProductArea <<Composable>>{   
+    ..Parameter..
+    - productList : ProductList
+    __
+    - createProductButton(product : Product) : void
+}
+
+class ProductButton <<Composable>>{    
+    ..Parameter..
+    - product :  Product
+    - onClick : Lambda = addSaleItem()
+    ..Variable..
+    + name : String
+    + price : Double
+}
+
+note left of ProductButton::onClick
+    ruft addSaleItem() vom MainScreen auf
+    erzeugt SaleItem aus product und
+    füge SaleItem zu SaleItemList hinzu
+end note
+
+ProductArea "1" o-down- "*" ProductButton
+
+@enduml

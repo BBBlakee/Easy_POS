@@ -1,0 +1,26 @@
+@startuml UserArea
+
+skinparam ClassAttributeIconSize 0
+skinparam class {
+    BackgroundColor<<Composable>> Wheat
+}
+!include ./productArea/productArea.puml
+!include ./receiptArea/receiptArea.puml
+
+class MainScreen <<Composable>>{    
+    + productArea : ProductArea
+    + receiptArea : ReceiptArea
+
+    - addSaleItem(saleItem : SaleItem) : void
+}
+
+note left of MainScreen::addSaleItem
+    wird bis zum ProductButton weitergegeben
+    damit dieser nichts von der SaleItemList
+    wissen muss
+end note
+
+MainScreen "1" o-- "1" ProductArea
+MainScreen "1" o-- "1" ReceiptArea
+
+@enduml

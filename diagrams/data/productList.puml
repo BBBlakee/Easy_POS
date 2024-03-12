@@ -1,0 +1,20 @@
+@startuml ProductList
+
+skinparam ClassAttributeIconSize 0
+!include ./product.puml
+
+
+class ProductList <<Singleton>> {
+    - productListInstance : ArrayList<Product> = null
+    + length : Int
+
+    + getInstance() : ProductList {companion object}
+    + add(product : Product) : Boolean
+    + remove(product : Product) : Boolean
+    + iterator() : Iterator<Product> {override}
+}
+
+class ProductList implements Interable
+
+ProductList "*" o-- "*" Product
+@enduml

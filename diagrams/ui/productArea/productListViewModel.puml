@@ -1,0 +1,22 @@
+@startuml ProductListViewModel
+
+skinparam ClassAttributeIconSize 0
+
+class ProductListViewModel {
+    - _uiState : MutableFlowState
+    + uiState : StateFlow<ProductListUiState> = _uiState.asStateFlow()
+    --
+    + add()
+    + remove()
+    + iterator()
+}
+
+class ProductListUiState <<Data>> {
+    + productList : ProductList = ProductList.getInstance()
+}
+
+class ProductListViewModel implements ViewModel
+
+ProductListViewModel "1" *-- "1" ProductListUiState
+
+@enduml

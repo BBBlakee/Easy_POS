@@ -26,6 +26,10 @@ class ProductList : Iterable<Product> {
         return productList.add(product)
     }
 
+    fun contains(product: Product): Boolean {
+        return productList.contains(product)
+    }
+
     /**
      * Removes product from the list
      * @param product Product to be removed

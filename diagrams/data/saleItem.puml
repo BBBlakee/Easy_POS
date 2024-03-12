@@ -1,0 +1,21 @@
+@startuml SaleItem
+
+skinparam ClassAttributeIconSize 0
+
+class SaleItem <<data>> {
+    +saleProduct : Product
+    -amount : Int = 0
+
+    +getTotalPrice() : Double
+    +getName() : String
+    +getSinglePrice() : Double
+    +getAmount() : Int
+    +increment() : void
+    +decrement() : Boolean
+}
+
+note right of SaleItem::decrement
+    amount--
+    return amount != 0
+end note
+@enduml

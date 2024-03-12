@@ -27,7 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 import com.example.pos_moneylist.ui.ViewModelProvider
-import com.example.pos_moneylist.ui.addProductScreen.AddProductScreen
+import com.example.pos_moneylist.ui.addProductScreen.AddProductDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +85,14 @@ fun SettingsScreen(
             }
         }
         if (showAddProductScreen) {
-            AddProductScreen(onDismissRequest = { showAddProductScreen = false })
+            AddProductDialog(
+                onDismissRequest = { showAddProductScreen = false },
+                onCancel = { showAddProductScreen = false },
+                onConfirm = { product ->
+                    settingsScreenViewModel.addProduct(product = product)
+                    showAddProductScreen = false
+                },
+                onNameChange = { product -> settingsScreenViewModel.contains(product = product) })
         }
     }
 }

@@ -1,0 +1,24 @@
+@startuml Product
+
+skinparam ClassAttributeIconSize 0
+
+class Product <<data>> {
+    +name : String
+    +price : Int
+    +color : Color
+    
+    +equals(other : Any?) : Boolean {override} 
+    +hashCode() : Int {override} 
+}
+
+note right of Product::equals
+    if (other is Product) {
+        return hashCode() == other.hashCode()
+    }
+    return false
+end note
+
+note left of Product::hashCode
+    return name.hashCode()
+end note
+@enduml

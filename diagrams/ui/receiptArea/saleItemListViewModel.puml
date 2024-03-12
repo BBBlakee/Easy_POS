@@ -1,0 +1,23 @@
+@startuml SaleItemListViewModel
+
+skinparam ClassAttributeIconSize 0
+
+class SaleItemListViewModel {
+    - _uiState : MutableFlowState
+    + uiState : StateFlow<ProductListUiState> = _uiState.asStateFlow()
+    --
+    + add()
+    + remove()
+    + removeAll()
+    + iterator()
+}
+
+class SaleItemListUiState <<Data>> {
+    + saleItemList : SaleItemList 
+}
+
+class SaleItemListViewModel implements ViewModel
+
+SaleItemListViewModel "1" *-- "1" SaleItemListUiState
+
+@enduml
