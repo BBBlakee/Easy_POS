@@ -9,6 +9,7 @@ class SettingsScreenViewModel : ViewModel() {
 
     fun addProduct(product: Product) {
         productList.add(product)
+        Controller.saveProductList()
     }
 
     fun contains(product: Product): Boolean {

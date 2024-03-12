@@ -1,7 +1,5 @@
 package com.example.pos_moneylist.ui.addProductScreen
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,10 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,8 +34,6 @@ import com.example.pos_moneylist.data.productList.Product
  * it to the product list.
  * @param onNameChange Function to check, if product already exists.
  */
-@RequiresApi(Build.VERSION_CODES.N)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductDialog(
     onDismissRequest: () -> Unit,
@@ -52,7 +47,7 @@ fun AddProductDialog(
     var productColor: Color by remember { mutableStateOf(Color.Red) }
 
     var nameIsValid: Boolean by remember { mutableStateOf(false) }
-    var priceIsValid: Boolean by remember { mutableStateOf(true) }
+    var priceIsValid: Boolean by remember { mutableStateOf(false) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Box(modifier = Modifier.background(Color.White)) {
@@ -69,9 +64,9 @@ fun AddProductDialog(
                         productName = it
                     },
                     colors = if (nameIsValid) {
-                        TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.Black)
+                        OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
-                        TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.Red)
+                        OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
                     }
                 )
 
@@ -80,18 +75,20 @@ fun AddProductDialog(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
                     onValueChange = {
-                        priceIsValid = it.isNotEmpty()
-                        productPrice = if (it.startsWith("0")) {
-                            ""
-                        } else {
-                            it
+                        priceIsValid = it.isNotEmpty() and !it.startsWith("-")
+                        priceIsValid = try {
+                            it.toFloat()
+                            true
+                        } catch (e: NumberFormatException) {
+                            false
                         }
+                        productPrice = it
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = if (priceIsValid) {
-                        TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.Black)
+                        OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
-                        TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.Red)
+                        OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
                     },
                     //visualTransformation = CurrencyAmountVisualTransformation()
                 )
@@ -122,7 +119,8 @@ fun AddProductDialog(
                                     color = productColor
                                 )
                             )
-                        }) {
+                        },
+                    ) {
                         Text(text = stringResource(R.string.button_confirm))
                     }
                 }

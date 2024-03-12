@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -29,7 +28,6 @@ import com.example.pos_moneylist.data.productList.Product
 import com.example.pos_moneylist.ui.ViewModelProvider
 import com.example.pos_moneylist.ui.addProductScreen.AddProductDialog
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -44,7 +42,6 @@ fun SettingsScreen(
 
 
     Scaffold(
-        modifier = Modifier.background(Color(0.0f, 0.0f, 0.0f, 0.5f)),
         floatingActionButton = {
             IconButton(onClick = { showAddProductScreen = true }) {
                 Icon(
