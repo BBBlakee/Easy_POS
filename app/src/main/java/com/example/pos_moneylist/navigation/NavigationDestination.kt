@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.navigation
+package com.example.pos_moneylist.navigation
 
 interface NavigationDestination {
     val route: String

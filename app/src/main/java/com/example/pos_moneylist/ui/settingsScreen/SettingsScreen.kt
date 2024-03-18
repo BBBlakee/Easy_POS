@@ -114,6 +114,11 @@ fun SettingsScreen(
                     showProductDetailsScreen = false
                 },
                 onNameChange = { product -> settingsScreenViewModel.contains(product = product) },
+                onDelete = { product ->
+                    settingsScreenViewModel.remove(product)
+                    Controller.saveProductList()
+                    showProductDetailsScreen = false
+                },
                 product = productDetails
             )
         }

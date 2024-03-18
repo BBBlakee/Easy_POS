@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ fun ProductDetailsAndEditDialog(
     onCancel: () -> Unit,
     onConfirm: () -> Unit,
     onNameChange: (product: Product) -> Boolean,
+    onDelete: (product: Product) -> Unit,
     product: Product,
 ) {
 
@@ -98,6 +100,13 @@ fun ProductDetailsAndEditDialog(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    //Delete button
+                    Button(
+                        onClick = { onDelete(product) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text(text = stringResource(R.string.button_delete))
+                    }
                     //Cancel button
                     Button(onClick = onCancel) {
                         Text(text = stringResource(R.string.button_cancel))

@@ -15,4 +15,8 @@ class SettingsScreenViewModel : ViewModel() {
     fun contains(product: Product): Boolean {
         return productList.contains(product = product)
     }
+
+    fun remove(product: Product) {
+        productList.remove(product)
+    }
 }

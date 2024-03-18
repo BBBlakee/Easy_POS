@@ -1,10 +1,11 @@
-package com.example.pos_moneylist.ui.navigation
+package com.example.pos_moneylist.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
+import androidx.compose.material.icons.twotone.Menu
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,28 +44,46 @@ fun MoneyListNavHost(
     val receiptAreaViewModel: ReceiptAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
 
     var showSettingsScreen: Boolean by remember { mutableStateOf(false) }
+    var showAboutScreen: Boolean by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController, startDestination = HomeDestination.route, modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
             Scaffold(topBar = {
-                TopAppBar(title = { Text(stringResource(R.string.topAppBar_title)) }, actions = {
-                    IconButton(onClick = { showSettingsScreen = !showSettingsScreen }) {
-                        if (!showSettingsScreen) {
-                            Icon(
-                                Icons.TwoTone.Settings,
-                                modifier = Modifier.size(48.dp),
-                                contentDescription = "Edit product list button"
-                            )
-                        } else {
-                            Icon(
-                                Icons.TwoTone.Close,
-                                modifier = Modifier.size(48.dp),
-                                contentDescription = "Close button"
-                            )
+                TopAppBar(
+                    title = { Text(stringResource(R.string.topAppBar_title)) },
+                    actions = {
+                        IconButton(onClick = { showSettingsScreen = !showSettingsScreen }) {
+                            if (!showSettingsScreen) {
+                                Icon(
+                                    Icons.TwoTone.Settings,
+                                    modifier = Modifier.size(48.dp),
+                                    contentDescription = "Edit product list button"
+                                )
+                            } else {
+                                Icon(
+                                    Icons.TwoTone.Close,
+                                    modifier = Modifier.size(48.dp),
+                                    contentDescription = "Close button"
+                                )
+                            }
                         }
-                    }
+                        IconButton(onClick = { showAboutScreen = !showAboutScreen }) {
+                            if (!showAboutScreen) {
+                                Icon(
+                                    Icons.TwoTone.Menu,
+                                    modifier = Modifier.size(48.dp),
+                                    contentDescription = "Open about menu"
+                                )
+                            } else {
+                                Icon(
+                                    Icons.TwoTone.Close,
+                                    modifier = Modifier.size(48.dp),
+                                    contentDescription = "Close button"
+                                )
+                            }
+                        }
                 })
             }) { innerPadding ->
                 Box(Modifier.padding(innerPadding)) {
@@ -74,6 +93,9 @@ fun MoneyListNavHost(
                     )
                     if (showSettingsScreen) {
                         SettingsScreen()
+                    }
+                    if (showAboutScreen) {
+                        //TODO
                     }
                 }
             }
