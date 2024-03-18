@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.addProductScreen
+package com.example.pos_moneylist.ui.productDetailsAndEditScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,30 +24,22 @@ import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 
-/**
- * Dialog if a new product should be added to the product list. The dialog takes the name, price and
- * color and creates a new [Product]. The price text field checks, if the input is a currency. The name
- * text field checks, if the product already exists.
- * @param onDismissRequest What should happen if the user clicks outside the dialog?
- * @param onCancel What should happen, if the user cancels the dialog?
- * @param onConfirm What should happen, if the user confirms the dialog? Creates the product and adds
- * it to the product list.
- * @param onNameChange Function to check, if product already exists.
- */
 @Composable
-fun AddProductDialog(
+fun ProductDetailsAndEditDialog(
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onConfirm: (product: Product) -> Unit,
+    onConfirm: () -> Unit,
     onNameChange: (product: Product) -> Boolean,
+    product: Product,
 ) {
 
-    var productName: String by remember { mutableStateOf("") }
-    var productPrice: String by remember { mutableStateOf("") }
-    var productColor: Color by remember { mutableStateOf(Color.Red) }
+    var productName: String by remember { mutableStateOf(product.name) }
+    var productPrice: String by remember { mutableStateOf(product.price.toString()) }
+    var productColor: Color by remember { mutableStateOf(product.color) }
 
-    var nameIsValid: Boolean by remember { mutableStateOf(false) }
-    var priceIsValid: Boolean by remember { mutableStateOf(false) }
+    var nameIsValid: Boolean by remember { mutableStateOf(true) }
+    var priceIsValid: Boolean by remember { mutableStateOf(true) }
+    var changesMade: Boolean by remember { mutableStateOf(false) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Box(modifier = Modifier.background(Color.White)) {
@@ -61,6 +53,7 @@ fun AddProductDialog(
                     onValueChange = {
                         nameIsValid =
                             !onNameChange(Product(it, 0.0f, Color.Black)) and it.isNotEmpty()
+                        changesMade = true
                         productName = it
                     },
                     colors = if (nameIsValid) {
@@ -76,6 +69,7 @@ fun AddProductDialog(
                     value = productPrice,
                     onValueChange = {
                         priceIsValid = it.isNotEmpty() and !it.startsWith("-")
+                        changesMade = true
                         priceIsValid = try {
                             it.toFloat()
                             true
@@ -110,15 +104,12 @@ fun AddProductDialog(
                     }
                     //Confirm button
                     Button(
-                        enabled = nameIsValid and priceIsValid,
+                        enabled = nameIsValid and priceIsValid and changesMade,
                         onClick = {
-                            onConfirm(
-                                Product(
-                                    name = productName,
-                                    price = productPrice.toFloat(),
-                                    color = productColor
-                                )
-                            )
+                            product.name = productName
+                            product.price = productPrice.toFloat()
+                            product.color = productColor
+                            onConfirm()
                         },
                     ) {
                         Text(text = stringResource(R.string.button_confirm))

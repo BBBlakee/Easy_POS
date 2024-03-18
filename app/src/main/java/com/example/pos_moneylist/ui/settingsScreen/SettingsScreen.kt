@@ -1,6 +1,7 @@
 package com.example.pos_moneylist.ui.settingsScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,20 +25,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 import com.example.pos_moneylist.ui.ViewModelProvider
 import com.example.pos_moneylist.ui.addProductScreen.AddProductDialog
+import com.example.pos_moneylist.ui.productDetailsAndEditScreen.ProductDetailsAndEditDialog
 
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier,
     settingsScreenViewModel: SettingsScreenViewModel = viewModel(factory = ViewModelProvider.Factory),
 ) {
 
     val productList = remember { settingsScreenViewModel.productList.productList }
+    var productDetails: Product = remember { Product("No product", 0.00f, Color.Black) }
+
     var showProductList: Boolean by remember { mutableStateOf(false) }
     var showAddProductScreen: Boolean by remember { mutableStateOf(false) }
+    var showProductDetailsScreen: Boolean by remember { mutableStateOf(false) }
 
     showProductList = productList.size != 0
 
@@ -54,7 +60,6 @@ fun SettingsScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxWidth()
-                    .background(Color(0.0f, 0.0f, 0.0f, 0.5f))
             ) {
                 LazyColumn(
                     modifier = Modifier
@@ -63,9 +68,17 @@ fun SettingsScreen(
                     horizontalAlignment = Alignment.Start,
                 ) {
                     items(items = productList, key = { it.name }) { product: Product ->
-                        Text(
-                            text = product.name, fontSize = 40.sp
-                        )
+                        ListItem(headlineContent = {
+                            Text(
+                                modifier = Modifier.clickable {
+                                    showProductDetailsScreen = true
+                                    productDetails = product
+                                },
+                                text = product.name,
+                                fontSize = 40.sp
+                            )
+                        })
+
                     }
                 }
             }
@@ -90,6 +103,19 @@ fun SettingsScreen(
                     showAddProductScreen = false
                 },
                 onNameChange = { product -> settingsScreenViewModel.contains(product = product) })
+        }
+
+        if (showProductDetailsScreen) {
+            ProductDetailsAndEditDialog(
+                onDismissRequest = { showProductDetailsScreen = false },
+                onCancel = { showProductDetailsScreen = false },
+                onConfirm = {
+                    Controller.saveProductList()
+                    showProductDetailsScreen = false
+                },
+                onNameChange = { product -> settingsScreenViewModel.contains(product = product) },
+                product = productDetails
+            )
         }
     }
 }

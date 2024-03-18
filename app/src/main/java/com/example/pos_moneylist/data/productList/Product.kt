@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.Color
  * @param color Color is used for the background color of the product button
  */
 data class Product(
-    val name: String,
+    var name: String,
     var price: Float,
-    val color: Color,
+    var color: Color,
 ) {
 
     /**

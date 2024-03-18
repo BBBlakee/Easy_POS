@@ -1,13 +1,13 @@
 package com.example.pos_moneylist.data.saleItemList
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 
 class SaleItemList : Iterable<SaleItem> {
     var saleItemList: SnapshotStateList<SaleItem> = mutableStateListOf()
-    var total: MutableState<Float> = mutableStateOf(0.0f)
+    var total: MutableState<Float> = mutableFloatStateOf(0.0f)
 
     fun add(saleItem: SaleItem) {
         val i: Int = saleItemList.indexOfFirst { it.name == saleItem.name }
