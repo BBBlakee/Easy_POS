@@ -24,5 +24,4 @@ fun ProductArea(
                 onClick = { onProductButtonClicked(SaleItem(product)) })
         }
     }
-
 }

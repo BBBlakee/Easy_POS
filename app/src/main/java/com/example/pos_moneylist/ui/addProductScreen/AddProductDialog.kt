@@ -1,12 +1,20 @@
 package com.example.pos_moneylist.ui.addProductScreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -20,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 
@@ -34,6 +44,7 @@ import com.example.pos_moneylist.data.productList.Product
  * it to the product list.
  * @param onNameChange Function to check, if product already exists.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductDialog(
     onDismissRequest: () -> Unit,
@@ -49,9 +60,12 @@ fun AddProductDialog(
     var nameIsValid: Boolean by remember { mutableStateOf(false) }
     var priceIsValid: Boolean by remember { mutableStateOf(false) }
 
+    val colorList = remember { Controller.productColorList.productColorList }
+
     Dialog(onDismissRequest = onDismissRequest) {
-        Box(modifier = Modifier.background(Color.White)) {
+
             Column(
+                modifier = Modifier.background(Color.White),
                 verticalArrangement = Arrangement.Center
             ) {
                 //Product name
@@ -93,11 +107,34 @@ fun AddProductDialog(
                     //visualTransformation = CurrencyAmountVisualTransformation()
                 )
 
-                //Product color
-                OutlinedTextField(
-                    label = { Text(text = stringResource(R.string.color)) },
-                    value = productColor.toString(),
-                    onValueChange = { /*TODO*/ })
+                //Product color - TODO change later to ColorSelector
+                Text(text = stringResource(R.string.color))
+                LazyRow {
+                    items(items = colorList, key = { it.hashCode() }) { color ->
+
+                        var isPressed: Boolean by remember { mutableStateOf(false) }
+
+                        OutlinedButton(
+                            onClick = {
+                                productColor = color
+                                isPressed = !isPressed
+                            },
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
+                            shape = CircleShape,
+                            border = if (isPressed) {
+                                BorderStroke(width = 3.dp, color = Color.Black)
+                            } else {
+                                BorderStroke(width = 3.dp, color = Color.White)
+                            },
+                            contentPadding = PaddingValues(0.dp),
+                            modifier = Modifier
+                                .size(50.dp)
+
+                        ) {
+
+                        }
+                    }
+                }
 
                 //Action buttons
                 Row(
@@ -125,6 +162,6 @@ fun AddProductDialog(
                     }
                 }
             }
-        }
+
     }
 }

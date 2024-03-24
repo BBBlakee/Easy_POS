@@ -22,6 +22,8 @@ fun ProductButton(
     val name: String = product.name
     val price: Float = product.price
 
+    val buttonColor = product.color
+
     Button(
         onClick = onClick,
         modifier = Modifier.padding(
@@ -30,7 +32,7 @@ fun ProductButton(
             bottom = 5.dp,
             end = 5.dp
         ),
-        colors = ButtonDefaults.buttonColors(containerColor = product.color)
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = name, fontSize = 30.sp)
