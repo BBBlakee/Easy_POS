@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.productArea
+package com.example.pos_moneylist.ui.home.productArea
 
 import androidx.lifecycle.ViewModel
 import com.example.pos_moneylist.Controller

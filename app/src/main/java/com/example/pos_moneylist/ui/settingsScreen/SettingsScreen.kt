@@ -29,8 +29,8 @@ import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 import com.example.pos_moneylist.ui.ViewModelProvider
-import com.example.pos_moneylist.ui.addProductScreen.AddProductDialog
-import com.example.pos_moneylist.ui.productDetailsAndEditScreen.ProductDetailsAndEditDialog
+import com.example.pos_moneylist.ui.home.addProductScreen.AddProductDialog
+import com.example.pos_moneylist.ui.home.productDetailsAndEditScreen.ProductDetailsAndEditDialog
 
 @Composable
 fun SettingsScreen(

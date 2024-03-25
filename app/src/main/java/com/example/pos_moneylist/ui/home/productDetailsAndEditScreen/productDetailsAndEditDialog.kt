@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.productDetailsAndEditScreen
+package com.example.pos_moneylist.ui.home.productDetailsAndEditScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -125,7 +125,6 @@ fun ProductDetailsAndEditDialog(
                             contentPadding = PaddingValues(0.dp),
                             modifier = Modifier
                                 .size(50.dp)
-
                         ) {
 
                         }

@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.productArea
+package com.example.pos_moneylist.ui.home.productArea
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow

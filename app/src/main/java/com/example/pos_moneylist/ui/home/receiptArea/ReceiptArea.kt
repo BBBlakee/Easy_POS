@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.receiptArea
+package com.example.pos_moneylist.ui.home.receiptArea
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

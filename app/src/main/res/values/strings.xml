@@ -9,4 +9,5 @@
     <string name="empty_list">No items in list</string>
     <string name="color">Color</string>
     <string name="button_delete">Delete</string>
+    <string name="titleAboutScreen">About</string>
 </resources>

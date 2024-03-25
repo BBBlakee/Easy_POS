@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
-import androidx.compose.material.icons.twotone.Menu
+import androidx.compose.material.icons.twotone.Info
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,14 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.navigation.NavigationDestination
-import com.example.pos_moneylist.ui.productArea.ProductArea
-import com.example.pos_moneylist.ui.productArea.ProductAreaViewModel
-import com.example.pos_moneylist.ui.receiptArea.ReceiptArea
-import com.example.pos_moneylist.ui.receiptArea.ReceiptAreaViewModel
+import com.example.pos_moneylist.ui.home.productArea.ProductArea
+import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
+import com.example.pos_moneylist.ui.home.receiptArea.ReceiptArea
+import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
 import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
 
 
-object HomeDestination : NavigationDestination {
+object DestinationHome : NavigationDestination {
     override val route: String = "home"
 }
 
@@ -42,10 +42,10 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     productAreaViewModel: ProductAreaViewModel,
     receiptAreaViewModel: ReceiptAreaViewModel,
+    onInfoClick: () -> Unit,
 ) {
 
     var showSettingsScreen: Boolean by remember { mutableStateOf(false) }
-    var showAboutScreen: Boolean by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -66,20 +66,12 @@ fun HomeScreen(
                         )
                     }
                 }
-                IconButton(onClick = { showAboutScreen = !showAboutScreen }) {
-                    if (!showAboutScreen) {
+                IconButton(onClick = onInfoClick) {
                         Icon(
-                            Icons.TwoTone.Menu,
+                            Icons.TwoTone.Info,
                             modifier = Modifier.size(48.dp),
                             contentDescription = "Open about menu"
                         )
-                    } else {
-                        Icon(
-                            Icons.TwoTone.Close,
-                            modifier = Modifier.size(48.dp),
-                            contentDescription = "Close button"
-                        )
-                    }
                 }
             })
     }) { innerPadding ->
@@ -109,9 +101,6 @@ fun HomeScreen(
             }
             if (showSettingsScreen) {
                 SettingsScreen()
-            }
-            if (showAboutScreen) {
-                //TODO
             }
         }
     }

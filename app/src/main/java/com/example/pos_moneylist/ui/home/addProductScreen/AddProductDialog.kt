@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.addProductScreen
+package com.example.pos_moneylist.ui.home.addProductScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

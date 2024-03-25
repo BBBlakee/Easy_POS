@@ -26,7 +26,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Paper.init(applicationContext)
                     Start()
-
                 }
             }
         }
