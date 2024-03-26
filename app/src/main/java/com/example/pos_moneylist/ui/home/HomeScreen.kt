@@ -1,9 +1,9 @@
 package com.example.pos_moneylist.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -47,7 +47,14 @@ fun HomeScreen(
 
     var showSettingsScreen: Boolean by remember { mutableStateOf(false) }
 
-    Scaffold(topBar = {
+    Scaffold(
+        contentWindowInsets = WindowInsets(
+            left = 10.dp,
+            right = 10.dp,
+            top = 10.dp,
+            bottom = 10.dp,
+        ),
+        topBar = {
         TopAppBar(
             title = { Text(stringResource(R.string.topAppBar_title)) },
             actions = {
@@ -74,9 +81,13 @@ fun HomeScreen(
                         )
                 }
             })
-    }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            Row {
+        }) { innerPadding ->
+
+        Row(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
                 Column(
                     Modifier.weight(0.6f)
                 ) {
@@ -91,17 +102,16 @@ fun HomeScreen(
 
                 Column(
                     Modifier.weight(0.3f),
-                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Row {
                         ReceiptArea(receiptAreaViewModel = receiptAreaViewModel)
                     }
                 }
-
-            }
             if (showSettingsScreen) {
                 SettingsScreen()
             }
         }
+
+
     }
 }

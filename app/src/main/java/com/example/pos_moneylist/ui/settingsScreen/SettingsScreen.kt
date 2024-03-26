@@ -2,8 +2,8 @@ package com.example.pos_moneylist.ui.settingsScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -56,16 +56,12 @@ fun SettingsScreen(
             }
         }) { innerPadding ->
         if (showProductList) {
-            Box(
+            LazyColumn(
                 modifier = Modifier
+                    .background(Color.White)
                     .padding(innerPadding)
-                    .fillMaxWidth()
-            ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.Start,
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     items(items = productList, key = { it.name }) { product: Product ->
                         ListItem(headlineContent = {
@@ -81,13 +77,12 @@ fun SettingsScreen(
 
                     }
                 }
-            }
         } else {
-            Box(
+            Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.TopCenter
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = stringResource(R.string.empty_list), fontSize = 40.sp
