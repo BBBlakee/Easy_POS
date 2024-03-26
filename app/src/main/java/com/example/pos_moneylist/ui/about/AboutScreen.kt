@@ -1,5 +1,6 @@
 package com.example.pos_moneylist.ui.about
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,17 +13,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.navigation.NavigationDestination
 
@@ -36,6 +39,8 @@ fun AboutScreen(
     aboutScreenViewModel: AboutScreenViewModel,
     onBackClick: () -> Unit,
 ) {
+
+    val context: Context = LocalContext.current
 
     val license by remember { aboutScreenViewModel.license }
 
@@ -56,23 +61,27 @@ fun AboutScreen(
                 .padding(paddingValues)
                 .fillMaxWidth()
         ) {
-            Text(text = "About Screen")
+            Text(text = stringResource(id = R.string.app_name))
             Icon(
                 imageVector = Icons.Rounded.Info, contentDescription = "App Icon"
             )
-            aboutScreenViewModel.loadLicenses(LocalContext.current)
+            Text(text = "Version 1.0.0", modifier = Modifier.padding(bottom = 10.dp))
+            Text(text = "Powered by open source", modifier = Modifier.padding(bottom = 10.dp))
+
+            aboutScreenViewModel.loadLicenses(context)
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 20.dp)
             ) {
                 item {
                     Text(text = "###################################################")
-                    Text(
-                        text = license.name,
-                        color = Color.Green,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(text = license.link, color = Color.Blue, fontFamily = FontFamily.Monospace)
+                    Text(text = license.name, fontFamily = FontFamily.Monospace, fontSize = 30.sp)
+                    TextButton(
+                        onClick = { AndroidUriHandler(context = context).openUri(license.link) },
+
+                        ) {
+                        Text(text = license.link, fontFamily = FontFamily.Monospace)
+                    }
                     Text(text = license.text, fontFamily = FontFamily.Monospace)
                     Text(text = "###################################################")
 
