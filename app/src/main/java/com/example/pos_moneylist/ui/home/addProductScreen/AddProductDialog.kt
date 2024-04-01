@@ -6,14 +6,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -60,22 +68,27 @@ fun AddProductDialog(
     var nameIsValid: Boolean by remember { mutableStateOf(false) }
     var priceIsValid: Boolean by remember { mutableStateOf(false) }
 
+    val isConfirmButtonEnabled: Boolean = nameIsValid and priceIsValid
+
     val colorList = remember { Controller.productColorList.productColorList }
 
     Dialog(onDismissRequest = onDismissRequest) {
-
+        Card(modifier = Modifier.fillMaxWidth(0.6f)) {
             Column(
-                modifier = Modifier.background(Color.White),
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(10.dp)
+                    .fillMaxWidth(),
             ) {
                 //Product name
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
                     value = productName,
-                    onValueChange = {
+                    onValueChange = { name ->
                         nameIsValid =
-                            !onNameChange(Product(it, 0.0f, Color.Black)) and it.isNotEmpty()
-                        productName = it
+                            !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
+                        productName = name
                     },
                     colors = if (nameIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
@@ -108,46 +121,56 @@ fun AddProductDialog(
                 )
 
                 //Product color - TODO change later to ColorSelector
-                Text(text = stringResource(R.string.color))
-                LazyRow {
-                    items(items = colorList, key = { it.hashCode() }) { color ->
+                Row {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
+                    ) {
+                        Text(text = stringResource(R.string.color))
+                        LazyRow {
+                            items(items = colorList, key = { it.hashCode() }) { color ->
 
-                        var isPressed: Boolean by remember { mutableStateOf(false) }
+                                var isPressed: Boolean by remember { mutableStateOf(false) }
 
-                        OutlinedButton(
-                            onClick = {
-                                productColor = color
-                                isPressed = !isPressed
-                            },
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
-                            shape = CircleShape,
-                            border = if (isPressed) {
-                                BorderStroke(width = 3.dp, color = Color.Black)
-                            } else {
-                                BorderStroke(width = 3.dp, color = Color.White)
-                            },
-                            contentPadding = PaddingValues(0.dp),
-                            modifier = Modifier
-                                .size(50.dp)
+                                OutlinedButton(
+                                    onClick = {
+                                        productColor = color
+                                        isPressed = !isPressed
+                                    },
+                                    colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
+                                    shape = CircleShape,
+                                    border = if (isPressed) {
+                                        BorderStroke(width = 3.dp, color = Color.Black)
+                                    } else {
+                                        BorderStroke(width = 3.dp, color = Color.White)
+                                    },
+                                    contentPadding = PaddingValues(0.dp),
+                                    modifier = Modifier
+                                        .size(50.dp)
 
-                        ) {
+                                ) {
 
+                                }
+                            }
                         }
                     }
                 }
 
                 //Action buttons
                 Row(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     //Cancel button
-                    Button(onClick = onCancel) {
-                        Text(text = stringResource(R.string.button_cancel))
+                    IconButton(onClick = onCancel) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = stringResource(id = R.string.button_cancel)
+                        )
                     }
                     //Confirm button
-                    Button(
-                        enabled = nameIsValid and priceIsValid,
+                    IconButton(
+                        enabled = isConfirmButtonEnabled,
                         onClick = {
                             onConfirm(
                                 Product(
@@ -158,10 +181,14 @@ fun AddProductDialog(
                             )
                         },
                     ) {
-                        Text(text = stringResource(R.string.button_confirm))
+                        Icon(
+                            imageVector = Icons.Outlined.Check,
+                            contentDescription = stringResource(id = R.string.button_confirm),
+                            tint = if (isConfirmButtonEnabled) Color.Green else LocalContentColor.current
+                        )
                     }
                 }
             }
-
+        }
     }
 }
