@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.home.addProductScreen
+package com.example.pos_moneylist.ui.settingsScreen.productDetailsAndEditScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,9 +16,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -42,35 +42,28 @@ import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 
-/**
- * Dialog if a new product should be added to the product list. The dialog takes the name, price and
- * color and creates a new [Product]. The price text field checks, if the input is a currency. The name
- * text field checks, if the product already exists.
- * @param onDismissRequest What should happen if the user clicks outside the dialog?
- * @param onCancel What should happen, if the user cancels the dialog?
- * @param onConfirm What should happen, if the user confirms the dialog? Creates the product and adds
- * it to the product list.
- * @param onNameChange Function to check, if product already exists.
- */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductDialog(
+fun ProductDetailsAndEditDialog(
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onConfirm: (product: Product) -> Unit,
+    onConfirm: () -> Unit,
     onNameChange: (product: Product) -> Boolean,
+    onDelete: (product: Product) -> Unit,
+    product: Product,
 ) {
 
-    var productName: String by remember { mutableStateOf("") }
-    var productPrice: String by remember { mutableStateOf("") }
-    var productColor: Color by remember { mutableStateOf(Color.Red) }
-
-    var nameIsValid: Boolean by remember { mutableStateOf(false) }
-    var priceIsValid: Boolean by remember { mutableStateOf(false) }
-
-    val isConfirmButtonEnabled: Boolean = nameIsValid and priceIsValid
-
     val colorList = remember { Controller.productColorList.productColorList }
+
+
+    var productName: String by remember { mutableStateOf(product.name) }
+    var productPrice: String by remember { mutableStateOf(product.price.toString()) }
+    var productColor: Color by remember { mutableStateOf(product.color) }
+
+    var isNameValid: Boolean by remember { mutableStateOf(true) }
+    var isPriceValid: Boolean by remember { mutableStateOf(true) }
+    var changesMade: Boolean by remember { mutableStateOf(false) }
+
+    val isConfirmButtonEnabled: Boolean = isNameValid and isPriceValid and changesMade
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(modifier = Modifier.fillMaxWidth(0.6f)) {
@@ -86,11 +79,12 @@ fun AddProductDialog(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
                     value = productName,
                     onValueChange = { name ->
-                        nameIsValid =
+                        isNameValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
+                        changesMade = true
                         productName = name
                     },
-                    colors = if (nameIsValid) {
+                    colors = if (isNameValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
@@ -102,8 +96,9 @@ fun AddProductDialog(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
                     onValueChange = {
-                        priceIsValid = it.isNotEmpty() and !it.startsWith("-")
-                        priceIsValid = try {
+                        isPriceValid = it.isNotEmpty() and !it.startsWith("-")
+                        changesMade = true
+                        isPriceValid = try {
                             it.toFloat()
                             true
                         } catch (e: NumberFormatException) {
@@ -112,7 +107,7 @@ fun AddProductDialog(
                         productPrice = it
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = if (priceIsValid) {
+                    colors = if (isPriceValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
@@ -120,6 +115,7 @@ fun AddProductDialog(
                     //visualTransformation = CurrencyAmountVisualTransformation()
                 )
 
+                //Product color
                 //Product color - TODO change later to ColorSelector
                 Row {
                     Column(
@@ -130,12 +126,13 @@ fun AddProductDialog(
                         LazyRow {
                             items(items = colorList, key = { it.hashCode() }) { color ->
 
-                                var isPressed: Boolean by remember { mutableStateOf(false) }
+                                var isPressed: Boolean by remember { mutableStateOf(productColor == color) }
 
                                 OutlinedButton(
                                     onClick = {
                                         productColor = color
                                         isPressed = !isPressed
+                                        changesMade = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
                                     shape = CircleShape,
@@ -147,7 +144,6 @@ fun AddProductDialog(
                                     contentPadding = PaddingValues(0.dp),
                                     modifier = Modifier
                                         .size(50.dp)
-
                                 ) {
 
                                 }
@@ -161,6 +157,16 @@ fun AddProductDialog(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    //Delete button
+                    IconButton(
+                        onClick = { onDelete(product) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.button_delete),
+                            tint = Color.Red
+                        )
+                    }
                     //Cancel button
                     IconButton(onClick = onCancel) {
                         Icon(
@@ -172,13 +178,10 @@ fun AddProductDialog(
                     IconButton(
                         enabled = isConfirmButtonEnabled,
                         onClick = {
-                            onConfirm(
-                                Product(
-                                    name = productName,
-                                    price = productPrice.toFloat(),
-                                    color = productColor
-                                )
-                            )
+                            product.name = productName
+                            product.price = productPrice.toFloat()
+                            product.color = productColor
+                            onConfirm()
                         },
                     ) {
                         Icon(

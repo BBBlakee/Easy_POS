@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.home.addProductScreen
+package com.example.pos_moneylist.ui.settingsScreen.addProductScreen
 
 /*
 @Composable

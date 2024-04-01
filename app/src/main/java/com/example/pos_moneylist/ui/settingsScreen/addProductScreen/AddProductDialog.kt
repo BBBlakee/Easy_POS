@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.ui.home.productDetailsAndEditScreen
+package com.example.pos_moneylist.ui.settingsScreen.addProductScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,9 +16,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -42,28 +42,35 @@ import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 
+/**
+ * Dialog if a new product should be added to the product list. The dialog takes the name, price and
+ * color and creates a new [Product]. The price text field checks, if the input is a currency. The name
+ * text field checks, if the product already exists.
+ * @param onDismissRequest What should happen if the user clicks outside the dialog?
+ * @param onCancel What should happen, if the user cancels the dialog?
+ * @param onConfirm What should happen, if the user confirms the dialog? Creates the product and adds
+ * it to the product list.
+ * @param onNameChange Function to check, if product already exists.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailsAndEditDialog(
+fun AddProductDialog(
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: (product: Product) -> Unit,
     onNameChange: (product: Product) -> Boolean,
-    onDelete: (product: Product) -> Unit,
-    product: Product,
 ) {
 
+    var productName: String by remember { mutableStateOf("") }
+    var productPrice: String by remember { mutableStateOf("") }
+    var productColor: Color by remember { mutableStateOf(Color.Red) }
+
+    var nameIsValid: Boolean by remember { mutableStateOf(false) }
+    var priceIsValid: Boolean by remember { mutableStateOf(false) }
+
+    val isConfirmButtonEnabled: Boolean = nameIsValid and priceIsValid
+
     val colorList = remember { Controller.productColorList.productColorList }
-
-
-    var productName: String by remember { mutableStateOf(product.name) }
-    var productPrice: String by remember { mutableStateOf(product.price.toString()) }
-    var productColor: Color by remember { mutableStateOf(product.color) }
-
-    var isNameValid: Boolean by remember { mutableStateOf(true) }
-    var isPriceValid: Boolean by remember { mutableStateOf(true) }
-    var changesMade: Boolean by remember { mutableStateOf(false) }
-
-    val isConfirmButtonEnabled: Boolean = isNameValid and isPriceValid and changesMade
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(modifier = Modifier.fillMaxWidth(0.6f)) {
@@ -79,12 +86,11 @@ fun ProductDetailsAndEditDialog(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
                     value = productName,
                     onValueChange = { name ->
-                        isNameValid =
+                        nameIsValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
-                        changesMade = true
                         productName = name
                     },
-                    colors = if (isNameValid) {
+                    colors = if (nameIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
@@ -95,19 +101,18 @@ fun ProductDetailsAndEditDialog(
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
-                    onValueChange = {
-                        isPriceValid = it.isNotEmpty() and !it.startsWith("-")
-                        changesMade = true
-                        isPriceValid = try {
-                            it.toFloat()
+                    onValueChange = { price ->
+                        priceIsValid = price.isNotEmpty() and !price.startsWith("-")
+                        priceIsValid = try {
+                            price.toFloat()
                             true
                         } catch (e: NumberFormatException) {
                             false
                         }
-                        productPrice = it
+                        productPrice = price
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = if (isPriceValid) {
+                    colors = if (priceIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
@@ -115,7 +120,6 @@ fun ProductDetailsAndEditDialog(
                     //visualTransformation = CurrencyAmountVisualTransformation()
                 )
 
-                //Product color
                 //Product color - TODO change later to ColorSelector
                 Row {
                     Column(
@@ -126,13 +130,12 @@ fun ProductDetailsAndEditDialog(
                         LazyRow {
                             items(items = colorList, key = { it.hashCode() }) { color ->
 
-                                var isPressed: Boolean by remember { mutableStateOf(productColor == color) }
+                                var isPressed: Boolean by remember { mutableStateOf(false) }
 
                                 OutlinedButton(
                                     onClick = {
                                         productColor = color
                                         isPressed = !isPressed
-                                        changesMade = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
                                     shape = CircleShape,
@@ -144,6 +147,7 @@ fun ProductDetailsAndEditDialog(
                                     contentPadding = PaddingValues(0.dp),
                                     modifier = Modifier
                                         .size(50.dp)
+
                                 ) {
 
                                 }
@@ -157,16 +161,6 @@ fun ProductDetailsAndEditDialog(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    //Delete button
-                    IconButton(
-                        onClick = { onDelete(product) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = stringResource(id = R.string.button_delete),
-                            tint = Color.Red
-                        )
-                    }
                     //Cancel button
                     IconButton(onClick = onCancel) {
                         Icon(
@@ -175,14 +169,16 @@ fun ProductDetailsAndEditDialog(
                         )
                     }
                     //Confirm button
-
                     IconButton(
                         enabled = isConfirmButtonEnabled,
                         onClick = {
-                            product.name = productName
-                            product.price = productPrice.toFloat()
-                            product.color = productColor
-                            onConfirm()
+                            onConfirm(
+                                Product(
+                                    name = productName,
+                                    price = productPrice.toFloat(),
+                                    color = productColor
+                                )
+                            )
                         },
                     ) {
                         Icon(

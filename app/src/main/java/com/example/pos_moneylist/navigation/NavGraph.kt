@@ -14,6 +14,9 @@ import com.example.pos_moneylist.ui.home.DestinationHome
 import com.example.pos_moneylist.ui.home.HomeScreen
 import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
+import com.example.pos_moneylist.ui.settingsScreen.DestinationSettings
+import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
+import com.example.pos_moneylist.ui.settingsScreen.SettingsScreenViewModel
 
 @Composable
 fun MoneyListNavHost(
@@ -24,6 +27,8 @@ fun MoneyListNavHost(
     val productAreaViewModel: ProductAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val receiptAreaViewModel: ReceiptAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val aboutScreenViewModel: AboutScreenViewModel = viewModel(factory = ViewModelProvider.Factory)
+    val settingsScreenViewModel: SettingsScreenViewModel =
+        viewModel(factory = ViewModelProvider.Factory)
 
     NavHost(
         navController = navController, startDestination = DestinationHome.route, modifier = modifier
@@ -32,12 +37,21 @@ fun MoneyListNavHost(
             HomeScreen(
                 productAreaViewModel = productAreaViewModel,
                 receiptAreaViewModel = receiptAreaViewModel,
-                onInfoClick = { navController.navigate(DestinationAbout.route) }
+                onInfoClick = { navController.navigate(DestinationAbout.route) },
+                onSettingsClick = { navController.navigate(DestinationSettings.route) }
             )
         }
+
         composable(route = DestinationAbout.route) {
             AboutScreen(
                 aboutScreenViewModel = aboutScreenViewModel,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = DestinationSettings.route) {
+            SettingsScreen(
+                settingsScreenViewModel = settingsScreenViewModel,
                 onBackClick = { navController.popBackStack() }
             )
         }

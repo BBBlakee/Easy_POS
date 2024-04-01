@@ -2,16 +2,15 @@ package com.example.pos_moneylist.ui.home.productArea
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.data.productList.Product
@@ -23,32 +22,34 @@ fun ProductButton(
 ) {
     val name: String = product.name
     val price: Float = product.price
-
     val buttonColor = product.color
 
-    Button(
+    FilledTonalButton(
         onClick = onClick,
         modifier = Modifier
             .padding(
-                start = 5.dp,
-                top = 5.dp,
-                bottom = 5.dp,
-                end = 5.dp
+                start = 5.dp, top = 5.dp, bottom = 5.dp, end = 5.dp
             )
-            .defaultMinSize(minHeight = 100.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+            .defaultMinSize(minHeight = 100.dp)
+            .fillMaxSize(),
+        colors = ButtonDefaults.filledTonalButtonColors(containerColor = buttonColor),
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = name, fontSize = 30.sp, textAlign = TextAlign.Center)
-            Text(text = "$price €", fontSize = 20.sp, textAlign = TextAlign.Center)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = name,
+                fontSize = 30.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 30.sp,
+                modifier = Modifier.fillMaxSize()
+            )
+            Text(
+                text = String.format("%.2f €", price),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxSize()
+            )
         }
-    }
-}
-
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
-@Composable
-fun ProductButtonPreview() {
-    ProductButton(product = Product("Test langer Text", 9.99f, Color.DarkGray)) {
-
     }
 }

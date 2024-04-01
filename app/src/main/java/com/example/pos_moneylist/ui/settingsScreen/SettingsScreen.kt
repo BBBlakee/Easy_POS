@@ -1,19 +1,21 @@
 package com.example.pos_moneylist.ui.settingsScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.twotone.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,17 +26,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
-import com.example.pos_moneylist.ui.ViewModelProvider
-import com.example.pos_moneylist.ui.home.addProductScreen.AddProductDialog
-import com.example.pos_moneylist.ui.home.productDetailsAndEditScreen.ProductDetailsAndEditDialog
+import com.example.pos_moneylist.navigation.NavigationDestination
+import com.example.pos_moneylist.ui.settingsScreen.addProductScreen.AddProductDialog
+import com.example.pos_moneylist.ui.settingsScreen.productDetailsAndEditScreen.ProductDetailsAndEditDialog
 
+object DestinationSettings : NavigationDestination {
+    override val route: String = "settings"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    settingsScreenViewModel: SettingsScreenViewModel = viewModel(factory = ViewModelProvider.Factory),
+    settingsScreenViewModel: SettingsScreenViewModel,
+    onBackClick: () -> Unit,
 ) {
 
     val productList = remember { settingsScreenViewModel.productList.productList }
@@ -48,6 +55,17 @@ fun SettingsScreen(
 
 
     Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = stringResource(R.string.titleSettingsScreen)) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = "Go back one screen"
+                        )
+                    }
+                })
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddProductScreen = true }) {
                 Icon(
@@ -58,13 +76,11 @@ fun SettingsScreen(
         if (showProductList) {
             LazyColumn(
                 modifier = Modifier
-                    .background(Color.White)
                     .padding(innerPadding)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     items(items = productList, key = { it.name }) { product: Product ->
-                        ListItem(headlineContent = {
                             Text(
                                 modifier = Modifier.clickable {
                                     showProductDetailsScreen = true
@@ -73,19 +89,17 @@ fun SettingsScreen(
                                 text = product.name,
                                 fontSize = 40.sp
                             )
-                        })
-
                     }
                 }
         } else {
-            Column(
+            Box(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.empty_list), fontSize = 40.sp
+                    text = stringResource(R.string.empty_list), fontSize = 60.sp
                 )
             }
         }

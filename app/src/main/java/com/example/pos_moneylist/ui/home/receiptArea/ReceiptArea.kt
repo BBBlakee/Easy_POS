@@ -2,12 +2,13 @@ package com.example.pos_moneylist.ui.home.receiptArea
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,7 +28,10 @@ fun ReceiptArea(
     val saleItemList = remember { receiptAreaViewModel.saleItemList.saleItemList }
     val total by remember { receiptAreaViewModel.saleItemList.total }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Row {
             Column {
                 Row {
@@ -37,7 +41,7 @@ fun ReceiptArea(
                     )
                 }
 
-                Divider(
+                HorizontalDivider(
                     Modifier.padding(top = 5.dp, bottom = 15.dp),
                     thickness = 3.dp
                 )
@@ -67,7 +71,7 @@ fun ReceiptArea(
         Row {
             Column {
 
-                Divider(
+                HorizontalDivider(
                     Modifier.padding(top = 5.dp, bottom = 15.dp),
                     thickness = 3.dp
                 )
