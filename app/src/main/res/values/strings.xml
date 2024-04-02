@@ -11,4 +11,5 @@
     <string name="button_delete">Delete</string>
     <string name="titleAboutScreen">About</string>
     <string name="titleSettingsScreen">Settings</string>
+    <string name="appGithubPage">https://github.com/BBBlakee/Product_Calculator</string>
 </resources>
