@@ -83,8 +83,8 @@ fun SettingsScreen(
                     items(items = productList, key = { it.name }) { product: Product ->
                             Text(
                                 modifier = Modifier.clickable {
-                                    showProductDetailsScreen = true
                                     productDetails = product
+                                    showProductDetailsScreen = true
                                 },
                                 text = product.name,
                                 fontSize = 40.sp
@@ -103,12 +103,15 @@ fun SettingsScreen(
                 )
             }
         }
+
         if (showAddProductScreen) {
             AddProductDialog(
                 onDismissRequest = { showAddProductScreen = false },
                 onCancel = { showAddProductScreen = false },
                 onConfirm = { product ->
                     settingsScreenViewModel.addProduct(product = product)
+                    settingsScreenViewModel.sortList()
+                    Controller.saveProductList()
                     showAddProductScreen = false
                 },
                 onNameChange = { product -> settingsScreenViewModel.contains(product = product) })
@@ -119,12 +122,15 @@ fun SettingsScreen(
                 onDismissRequest = { showProductDetailsScreen = false },
                 onCancel = { showProductDetailsScreen = false },
                 onConfirm = {
+                    settingsScreenViewModel.sortList()
                     Controller.saveProductList()
                     showProductDetailsScreen = false
                 },
                 onNameChange = { product -> settingsScreenViewModel.contains(product = product) },
                 onDelete = { product ->
+
                     settingsScreenViewModel.remove(product)
+                    settingsScreenViewModel.sortList()
                     Controller.saveProductList()
                     showProductDetailsScreen = false
                 },

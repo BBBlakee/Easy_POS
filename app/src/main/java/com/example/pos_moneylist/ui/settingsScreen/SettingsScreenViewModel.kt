@@ -9,7 +9,6 @@ class SettingsScreenViewModel : ViewModel() {
 
     fun addProduct(product: Product) {
         productList.add(product)
-        Controller.saveProductList()
     }
 
     fun contains(product: Product): Boolean {
@@ -18,5 +17,9 @@ class SettingsScreenViewModel : ViewModel() {
 
     fun remove(product: Product) {
         productList.remove(product)
+    }
+
+    fun sortList() {
+        productList.sortList()
     }
 }

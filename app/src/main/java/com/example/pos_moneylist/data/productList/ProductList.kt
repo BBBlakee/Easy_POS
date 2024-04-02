@@ -39,6 +39,10 @@ class ProductList : Iterable<Product> {
         return productList.remove(product)
     }
 
+    fun sortList() {
+        productList.sortWith(compareBy { it.name })
+    }
+
     /**
      * Returns an iterator of the internal array list
      * @return Returns iterator

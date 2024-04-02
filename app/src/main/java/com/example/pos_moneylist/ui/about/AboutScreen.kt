@@ -1,6 +1,7 @@
 package com.example.pos_moneylist.ui.about
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,7 @@ object DestinationAbout : NavigationDestination {
     override val route: String = "about"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AboutScreen(
     aboutScreenViewModel: AboutScreenViewModel,
@@ -43,6 +44,10 @@ fun AboutScreen(
     val context: Context = LocalContext.current
 
     val license by remember { aboutScreenViewModel.license }
+    aboutScreenViewModel.loadLicenses(context)
+
+    val appVersion: String =
+        context.packageManager.getPackageInfo(LocalContext.current.packageName, 0).versionName
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = stringResource(R.string.titleAboutScreen)) },
@@ -61,14 +66,17 @@ fun AboutScreen(
                 .padding(paddingValues)
                 .fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.app_name))
+            Text(text = stringResource(id = R.string.app_name), fontSize = 30.sp)
             Icon(
                 imageVector = Icons.Rounded.Info, contentDescription = "App Icon"
             )
-            Text(text = "Version 1.0.0", modifier = Modifier.padding(bottom = 10.dp))
+            Text(
+                text = "Version $appVersion",
+                fontSize = 20.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
             Text(text = "Powered by open source", modifier = Modifier.padding(bottom = 10.dp))
 
-            aboutScreenViewModel.loadLicenses(context)
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 20.dp)
