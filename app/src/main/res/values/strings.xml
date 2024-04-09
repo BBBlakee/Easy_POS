@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Product Calculator</string>
+    <string name="app_name">Simple POS</string>
     <string name="clear_button">Clear</string>
     <string name="topAppBar_title">POS_Moneylist</string>
     <string name="add_product_name">Name</string>
