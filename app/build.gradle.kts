@@ -35,12 +35,12 @@ android {
         }
         create("beta") {
             initWith(getByName("release"))
-            versionNameSuffix = "beta"
+            versionNameSuffix = "-beta"
             applicationIdSuffix = ".beta"
         }
         debug {
             isDebuggable = true
-            versionNameSuffix = "debug"
+            versionNameSuffix = "-debug"
             applicationIdSuffix = ".debug"
         }
 

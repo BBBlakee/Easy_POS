@@ -1,4 +1,4 @@
-package com.example.pos_moneylist.navigation
+package com.example.pos_moneylist.navigation.drawer
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

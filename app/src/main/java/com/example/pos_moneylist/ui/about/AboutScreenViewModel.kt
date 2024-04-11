@@ -33,6 +33,10 @@ class AboutScreenViewModel : ViewModel() {
             }
         }
     }
+
+    fun getAppVersion(context: Context): String {
+        return context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    }
 }
 
 data class License(

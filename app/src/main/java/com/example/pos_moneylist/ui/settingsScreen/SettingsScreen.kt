@@ -57,7 +57,9 @@ fun SettingsScreen(
                     Icons.TwoTone.Add, contentDescription = "Add button"
                 )
             }
-        }) { innerPadding ->
+        },
+        modifier = Modifier.padding(innerPadding)
+    ) { innerPadding ->
         if (showProductList) {
             LazyColumn(
                 modifier = Modifier

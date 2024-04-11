@@ -40,52 +40,52 @@ fun AboutScreen(
     val license by remember { aboutScreenViewModel.license }
     aboutScreenViewModel.loadLicenses(context)
 
-    val appVersion: String =
-        context.packageManager.getPackageInfo(LocalContext.current.packageName, 0).versionName
+    val appVersion: String = aboutScreenViewModel.getAppVersion(context)
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                fontSize = 30.sp,
-                modifier = Modifier.padding(10.dp)
-            )
-            Icon(
-                imageVector = Icons.Rounded.Info, contentDescription = "App Icon"
-            )
-            Text(
-                text = "Version $appVersion", fontSize = 20.sp, modifier = Modifier.padding(10.dp)
-            )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+    ) {
+        Text(
+            text = stringResource(id = R.string.app_name),
+            fontSize = 30.sp,
+            modifier = Modifier.padding(10.dp)
+        )
+        Icon(
+            imageVector = Icons.Rounded.Info, contentDescription = "App Icon"
+        )
+        Text(
+            text = "Version $appVersion", fontSize = 20.sp, modifier = Modifier.padding(10.dp)
+        )
 
-            TextButton(onClick = { AndroidUriHandler(context = context).openUri(context.getString(R.string.appGithubPage)) }) {
-                Text(text = stringResource(id = R.string.appGithubPage), fontSize = 20.sp)
-            }
-
-            Text(
-                text = "Powered by open source", modifier = Modifier.padding(10.dp)
-            )
-
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 20.dp)
-            ) {
-                item {
-                    Text(text = "###################################################")
-                    Text(text = license.name, fontFamily = FontFamily.Monospace, fontSize = 25.sp)
-                    TextButton(
-                        onClick = { AndroidUriHandler(context = context).openUri(license.link) },
-
-                        ) {
-                        Text(text = license.link, fontFamily = FontFamily.Monospace)
-                    }
-                    Text(text = license.text, fontFamily = FontFamily.Monospace)
-                    Text(text = "###################################################")
-
-                }
-            }
-
+        TextButton(onClick = { AndroidUriHandler(context = context).openUri(context.getString(R.string.app_github_page)) }) {
+            Text(text = stringResource(id = R.string.app_github_page), fontSize = 20.sp)
         }
+
+        Text(
+            text = "Powered by open source", modifier = Modifier.padding(10.dp)
+        )
+
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(vertical = 20.dp)
+        ) {
+            item {
+                Text(text = "###################################################")
+                Text(text = license.name, fontFamily = FontFamily.Monospace, fontSize = 25.sp)
+                TextButton(
+                    onClick = { AndroidUriHandler(context = context).openUri(license.link) },
+
+                    ) {
+                    Text(text = license.link, fontFamily = FontFamily.Monospace)
+                }
+                Text(text = license.text, fontFamily = FontFamily.Monospace)
+                Text(text = "###################################################")
+
+            }
+        }
+
     }
+}

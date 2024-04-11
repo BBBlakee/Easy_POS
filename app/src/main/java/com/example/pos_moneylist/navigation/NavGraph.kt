@@ -8,7 +8,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -22,6 +21,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.pos_moneylist.R
+import com.example.pos_moneylist.navigation.drawer.AppBar
+import com.example.pos_moneylist.navigation.drawer.DrawerBody
+import com.example.pos_moneylist.navigation.drawer.DrawerHeader
+import com.example.pos_moneylist.navigation.drawer.DrawerItem
 import com.example.pos_moneylist.ui.ViewModelProvider
 import com.example.pos_moneylist.ui.about.AboutScreen
 import com.example.pos_moneylist.ui.about.AboutScreenViewModel
@@ -35,7 +38,6 @@ import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
 import com.example.pos_moneylist.ui.settingsScreen.SettingsScreenViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoneyListNavHost(
     navController: NavHostController,
@@ -54,7 +56,6 @@ fun MoneyListNavHost(
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
-                //create drawer item, which navigate between composables
                 DrawerHeader()
                 DrawerBody(items = listOf(
                     DrawerItem(
@@ -64,12 +65,12 @@ fun MoneyListNavHost(
                         iconSelected = Icons.Filled.Home
                     ), DrawerItem(
                         id = "settings",
-                        name = stringResource(R.string.titleSettingsScreen),
+                        name = stringResource(R.string.title_settings_screen),
                         icon = Icons.Outlined.Settings,
                         iconSelected = Icons.Filled.Settings
                     ), DrawerItem(
                         id = "about",
-                        name = stringResource(R.string.titleAboutScreen),
+                        name = stringResource(R.string.title_about_screen),
                         icon = Icons.Outlined.Info,
                         iconSelected = Icons.Filled.Info
                     )

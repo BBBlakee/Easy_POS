@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_product_price">Preis</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="button_confirm">Bestätigen</string>
+    <string name="empty_list">Keine Produkte in der Liste</string>
+    <string name="color">Farbe</string>
+    <string name="button_delete">Löschen</string>
+    <string name="title_about_screen">Info</string>
+    <string name="title_settings_screen">Einstellungen</string>
+    <string name="drawer_title">Menü</string>
+    <string name="drawer_item_home">Start</string>
+    <string name="clear_button">Bezahlen</string>
+    <string name="add_product_name">Name</string>
+</resources>
