@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.R
@@ -34,17 +37,7 @@ fun ReceiptArea(
     ) {
         Row {
             Column {
-                Row {
-                    Text(
-                        text = String.format("%.2f EUR", total),
-                        fontSize = 55.sp
-                    )
-                }
 
-                HorizontalDivider(
-                    Modifier.padding(top = 5.dp, bottom = 15.dp),
-                    thickness = 3.dp
-                )
             }
         }
 
@@ -66,13 +59,28 @@ fun ReceiptArea(
             Column {
 
                 HorizontalDivider(
-                    Modifier.padding(top = 5.dp, bottom = 15.dp),
-                    thickness = 3.dp
+                    Modifier.padding(vertical = 10.dp),
+                    thickness = 2.dp
+                )
+
+                Row {
+                    Text(
+                        text = String.format("%.2f EUR", total),
+                        fontSize = 55.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                HorizontalDivider(
+                    Modifier.padding(vertical = 10.dp),
+                    thickness = 2.dp
                 )
 
                 Button(
                     onClick = { receiptAreaViewModel.clear() },
-                    Modifier
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8B40)),
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp)
                 ) {

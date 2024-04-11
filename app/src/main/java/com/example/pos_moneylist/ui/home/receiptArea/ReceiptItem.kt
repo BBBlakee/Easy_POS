@@ -10,6 +10,8 @@ import androidx.compose.material.icons.twotone.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,7 +46,7 @@ fun ReceiptItem(
             ) {
                 Icon(
                     imageVector = Icons.TwoTone.AddCircle,
-                    contentDescription = "Add saleitem",
+                    contentDescription = "Add sale item",
                     modifier = Modifier.size(buttonSize)
                 )
             }
@@ -61,7 +63,7 @@ fun ReceiptItem(
         }
 
     },
-        tonalElevation = tonalElevation,
+        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         modifier = modifier
             .padding(vertical = 5.dp)
             .clip(RoundedCornerShape(15.dp))
