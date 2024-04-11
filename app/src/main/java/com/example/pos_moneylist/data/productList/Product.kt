@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 data class Product(
     var name: String,
     var price: Float,
-    var color: Color,
+    var color: Color = Color.Unspecified,
 ) {
 
     /**

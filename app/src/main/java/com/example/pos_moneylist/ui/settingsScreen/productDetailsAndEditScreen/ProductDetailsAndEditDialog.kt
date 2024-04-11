@@ -115,28 +115,25 @@ fun ProductDetailsAndEditDialog(
                     //visualTransformation = CurrencyAmountVisualTransformation()
                 )
 
-                //Product color
                 //Product color - TODO change later to ColorSelector
                 Row {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
                     ) {
+
                         Text(text = stringResource(R.string.color))
                         LazyRow {
                             items(items = colorList, key = { it.hashCode() }) { color ->
 
-                                var isPressed: Boolean by remember { mutableStateOf(productColor == color) }
-
                                 OutlinedButton(
                                     onClick = {
                                         productColor = color
-                                        isPressed = !isPressed
                                         changesMade = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
                                     shape = CircleShape,
-                                    border = if (isPressed) {
+                                    border = if (productColor == color) {
                                         BorderStroke(width = 3.dp, color = Color.Black)
                                     } else {
                                         BorderStroke(width = 3.dp, color = Color.White)

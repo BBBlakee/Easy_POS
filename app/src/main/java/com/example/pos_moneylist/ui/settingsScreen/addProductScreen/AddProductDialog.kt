@@ -63,7 +63,7 @@ fun AddProductDialog(
 
     var productName: String by remember { mutableStateOf("") }
     var productPrice: String by remember { mutableStateOf("") }
-    var productColor: Color by remember { mutableStateOf(Color.Red) }
+    var productColor: Color by remember { mutableStateOf(Color.Unspecified) }
 
     var nameIsValid: Boolean by remember { mutableStateOf(false) }
     var priceIsValid: Boolean by remember { mutableStateOf(false) }
@@ -126,20 +126,21 @@ fun AddProductDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
                     ) {
+
+                        var selectedColor: Color by remember { mutableStateOf(Color.Unspecified) }
+
                         Text(text = stringResource(R.string.color))
                         LazyRow {
                             items(items = colorList, key = { it.hashCode() }) { color ->
 
-                                var isPressed: Boolean by remember { mutableStateOf(false) }
-
                                 OutlinedButton(
                                     onClick = {
                                         productColor = color
-                                        isPressed = !isPressed
+                                        selectedColor = color
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
                                     shape = CircleShape,
-                                    border = if (isPressed) {
+                                    border = if (selectedColor == color) {
                                         BorderStroke(width = 3.dp, color = Color.Black)
                                     } else {
                                         BorderStroke(width = 3.dp, color = Color.White)

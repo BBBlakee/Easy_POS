@@ -10,19 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pos_moneylist.data.productList.Product
 
 @Composable
 fun ProductButton(
-    product: Product,
+    name: String,
+    price: Float,
+    color: Color = ButtonDefaults.filledTonalButtonColors().containerColor,
     onClick: () -> Unit = {},
 ) {
-    val name: String = product.name
-    val price: Float = product.price
-    val buttonColor = product.color
 
     FilledTonalButton(
         onClick = onClick,
@@ -32,7 +31,7 @@ fun ProductButton(
             )
             .defaultMinSize(minHeight = 100.dp)
             .fillMaxSize(),
-        colors = ButtonDefaults.filledTonalButtonColors(containerColor = buttonColor),
+        colors = ButtonDefaults.filledTonalButtonColors(containerColor = color),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()

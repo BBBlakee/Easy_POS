@@ -31,6 +31,7 @@ fun HomeScreen(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(innerPadding)
+            .padding(10.dp)
             .fillMaxSize()
     ) {
         Column(
