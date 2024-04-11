@@ -55,17 +55,11 @@ fun ReceiptArea(
                     key = { it.name }
                 ) { saleItem: SaleItem ->
                     ReceiptItem(
-                        saleItem = saleItem,
-                        onDeleteButtonClicked = { receiptAreaViewModel.removeSaleItem(saleItem) })
+                        name = saleItem.name,
+                        counter = saleItem.counter,
+                        onMinusButtonClicked = { receiptAreaViewModel.removeSaleItem(saleItem) },
+                        onPlusButtonClicked = { receiptAreaViewModel.addSaleItem(saleItem) })
                 }
-                /*for (saleItem in saleItemList) {
-                    item(key = saleItem.name) {
-                        ReceiptItem(
-                            saleItem = saleItem,
-                            onDeleteButtonClicked = { receiptAreaViewModel.removeSaleItem(saleItem) })
-                    }
-                }
-                 */
             }
         }
         Row {

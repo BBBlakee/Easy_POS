@@ -1,28 +1,26 @@
 package com.example.pos_moneylist.data.saleItemList
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.example.pos_moneylist.data.productList.Product
 
 data class SaleItem(val saleProduct: Product) {
-    var counter: MutableState<Int> = mutableStateOf(0)
+    var counter: Int = 0
     val name: String = saleProduct.name
     val price: Float = saleProduct.price
 
     fun getTotalPrice(): Float {
-        return saleProduct.price * counter.value
+        return saleProduct.price * counter
     }
 
     fun getAmount(): Int {
-        return counter.value
+        return counter
     }
 
     fun increment() {
-        counter.value++
+        counter++
     }
 
     fun decrement() {
-        counter.value--
+        counter--
     }
 
     /**
@@ -45,7 +43,7 @@ data class SaleItem(val saleProduct: Product) {
     }
 
     override fun toString(): String {
-        return String.format("%-15.5s # %d", name, counter.value)
+        return String.format("%-15.5s # %d", name, counter)
     }
 
 }
