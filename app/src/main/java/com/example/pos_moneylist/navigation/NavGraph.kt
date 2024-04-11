@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -76,16 +77,34 @@ fun MoneyListNavHost(
                     )
                 ), onItemClick = { item ->
                     when (item.id) {
-                        "home" -> navController.navigate(DestinationHome.route)
-                        "settings" -> navController.navigate(DestinationSettings.route)
-                        "about" -> navController.navigate(DestinationAbout.route)
+                        "home" -> navController.navigate(DestinationHome.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+
+                        "settings" -> navController.navigate(DestinationSettings.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+
+                        "about" -> navController.navigate(DestinationAbout.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                     scope.launch { drawerState.close() }
                 })
             }
-        },
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen
+        }, drawerState = drawerState, gesturesEnabled = drawerState.isOpen
     ) {
         Scaffold(topBar = {
             AppBar(onNavigationIconClick = { scope.launch { drawerState.open() } })
