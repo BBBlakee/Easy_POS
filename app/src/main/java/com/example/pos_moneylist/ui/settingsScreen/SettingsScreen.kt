@@ -3,14 +3,19 @@ package com.example.pos_moneylist.ui.settingsScreen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.twotone.Add
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
@@ -57,27 +63,50 @@ fun SettingsScreen(
                     Icons.TwoTone.Add, contentDescription = "Add button"
                 )
             }
-        },
-        modifier = Modifier.padding(innerPadding)
+        }, modifier = Modifier.padding(innerPadding)
     ) { innerPadding ->
         if (showProductList) {
-            LazyColumn(
+            Row(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(innerPadding)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(0.5f))
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .weight(1f)
                 ) {
                     items(items = productList, key = { it.name }) { product: Product ->
-                            Text(
-                                modifier = Modifier.clickable {
+                        ListItem(headlineContent = { Text(text = product.name, fontSize = 25.sp) },
+                            supportingContent = {
+                                Text(
+                                    text = String.format(
+                                        "%.2f EUR", product.price
+                                    ),
+                                    color = Color.Gray
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Edit,
+                                    contentDescription = "Edit icon"
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                                .clickable {
                                     productDetails = product
                                     showProductDetailsScreen = true
-                                },
-                                text = product.name,
-                                fontSize = 40.sp
-                            )
+                                }
+                        )
+                        HorizontalDivider(thickness = 1.dp)
                     }
                 }
+                Spacer(modifier = Modifier.weight(0.5f))
+            }
+
         } else {
             Box(
                 modifier = Modifier

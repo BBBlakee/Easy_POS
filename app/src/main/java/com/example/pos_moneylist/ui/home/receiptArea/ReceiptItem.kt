@@ -4,19 +4,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.AddCircle
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -28,15 +26,24 @@ import com.example.pos_moneylist.R
 fun ReceiptItem(
     name: String,
     counter: Int,
+    price: Float,
+    total: Float,
     modifier: Modifier = Modifier,
     itemTextStyle: TextStyle = TextStyle(fontSize = 25.sp),
-    tonalElevation: Dp = 3.dp,
     buttonSize: Dp = 25.dp,
     onMinusButtonClicked: () -> Unit,
     onPlusButtonClicked: () -> Unit,
 ) {
 
-    ListItem(headlineContent = { Text(text = name, style = itemTextStyle) }, trailingContent = {
+    ListItem(
+        headlineContent = { Text(text = name, style = itemTextStyle) },
+        supportingContent = {
+            Text(
+                text = String.format("$counter * %.2f € = %.2f €", price, total),
+                color = Color.Gray
+            )
+        },
+        trailingContent = {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
@@ -63,9 +70,9 @@ fun ReceiptItem(
         }
 
     },
-        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         modifier = modifier
             .padding(vertical = 5.dp)
-            .clip(RoundedCornerShape(15.dp))
+        //.border(BorderStroke(width = 1.dp, color = Color.Black), shape = RoundedCornerShape(15.dp))
     )
+    HorizontalDivider(thickness = 1.dp)
 }

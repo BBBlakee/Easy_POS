@@ -50,6 +50,8 @@ fun ReceiptArea(
                     ReceiptItem(
                         name = saleItem.name,
                         counter = saleItem.counter,
+                        price = saleItem.price,
+                        total = saleItem.getTotalPrice(),
                         onMinusButtonClicked = { receiptAreaViewModel.removeSaleItem(saleItem) },
                         onPlusButtonClicked = { receiptAreaViewModel.addSaleItem(saleItem) })
                 }

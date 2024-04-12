@@ -7,6 +7,7 @@ data class SaleItem(val saleProduct: Product) {
     val name: String = saleProduct.name
     val price: Float = saleProduct.price
 
+
     fun getTotalPrice(): Float {
         return saleProduct.price * counter
     }
