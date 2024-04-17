@@ -1,4 +1,23 @@
-package com.example.pos_moneylist.ui.visualtransformations
+/*
+ *     The app is a simple point of sale system, mainly developed for small clubs without a
+ *     point of sale system. It was developed to simplify the calculation of the total price.
+ *
+ *     Copyright (C) 2024 Michael Gamperling
+ *
+ *     This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation; either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License along
+ *     with this program; if not, write to the Free Software Foundation, Inc.,
+ *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
@@ -7,67 +26,113 @@ import androidx.compose.ui.text.input.VisualTransformation
 import java.lang.Integer.max
 import java.text.DecimalFormat
 
-class CurrencyAmountVisualTransformation : VisualTransformation {
+class CurrencyAmountInputVisualTransformation(
+    private val fixedCursorAtTheEnd: Boolean = true,
+    private val numberOfDecimals: Int = 2,
+) : VisualTransformation {
 
     private val symbols = DecimalFormat().decimalFormatSymbols
-    private val thousandsSeparator = symbols.groupingSeparator
-    private val decimalSeparator = symbols.decimalSeparator
 
     override fun filter(text: AnnotatedString): TransformedText {
+        val thousandsSeparator = symbols.groupingSeparator
+        val decimalSeparator = symbols.decimalSeparator
+        val zero = symbols.zeroDigit
+
         val inputText = text.text
 
-        val intPart = if (inputText.length > 2) {
-            inputText.subSequence(0, inputText.length - 2)
-        } else {
-            "0"
+        val intPart = inputText
+            .dropLast(numberOfDecimals)
+            .reversed()
+            .chunked(3)
+            .joinToString(thousandsSeparator.toString())
+            .reversed()
+            .ifEmpty {
+                zero.toString()
+            }
+
+        val fractionPart = inputText.takeLast(numberOfDecimals).let {
+            if (it.length != numberOfDecimals) {
+                List(numberOfDecimals - it.length) {
+                    zero
+                }.joinToString("") + it
+            } else {
+                it
+            }
         }
 
-        var fractionPart = if (inputText.length >= 2) {
-            inputText.subSequence(inputText.length - 2, inputText.length)
-        } else {
-            inputText
-        }
-// Add zeros if the fraction part length is not 2
-        if (fractionPart.length < 2) {
-            fractionPart = fractionPart.padStart(2, '0')
-        }
-
-        val thousandsReplacementPattern = Regex("\\B(?=(?:\\d{3})+(?!\\d))")
-        val formattedIntWithThousandsSeparator =
-            intPart.replace(
-                thousandsReplacementPattern,
-                thousandsSeparator.toString()
-            )
+        val formattedNumber = intPart + decimalSeparator + fractionPart
 
         val newText = AnnotatedString(
-            formattedIntWithThousandsSeparator + decimalSeparator + fractionPart,
-            text.spanStyles,
-            text.paragraphStyles
+            text = formattedNumber,
+            spanStyles = text.spanStyles,
+            paragraphStyles = text.paragraphStyles
         )
 
-        val offsetMapping = ThousandSeparatorOffsetMapping(
-            originalIntegerLength = intPart.length
-        )
-        return TransformedText(newText, offsetMapping)
-    }
-}
-
-class ThousandSeparatorOffsetMapping(
-    val originalIntegerLength: Int,
-) : OffsetMapping {
-
-    override fun originalToTransformed(offset: Int): Int =
-        when (offset) {
-            0, 1, 2 -> 4
-            else -> offset + 1 + calculateThousandsSeparatorCount(originalIntegerLength)
+        val offsetMapping = if (fixedCursorAtTheEnd) {
+            FixedCursorOffsetMapping(
+                contentLength = inputText.length,
+                formattedContentLength = formattedNumber.length
+            )
+        } else {
+            MovableCursorOffsetMapping(
+                unmaskedText = text.toString(),
+                maskedText = newText.toString(),
+                decimalDigits = numberOfDecimals
+            )
         }
 
-    override fun transformedToOriginal(offset: Int): Int =
-        originalIntegerLength +
-                calculateThousandsSeparatorCount(originalIntegerLength) +
-                2
+        return TransformedText(newText, offsetMapping)
+    }
 
-    private fun calculateThousandsSeparatorCount(
-        intDigitCount: Int,
-    ) = max((intDigitCount - 1) / 3, 0)
+    private class FixedCursorOffsetMapping(
+        private val contentLength: Int,
+        private val formattedContentLength: Int,
+    ) : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int = formattedContentLength
+        override fun transformedToOriginal(offset: Int): Int = contentLength
+    }
+
+    private class MovableCursorOffsetMapping(
+        private val unmaskedText: String,
+        private val maskedText: String,
+        private val decimalDigits: Int,
+    ) : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int =
+            when {
+                unmaskedText.length <= decimalDigits -> {
+                    maskedText.length - (unmaskedText.length - offset)
+                }
+
+                else -> {
+                    offset + offsetMaskCount(offset, maskedText)
+                }
+            }
+
+        override fun transformedToOriginal(offset: Int): Int =
+            when {
+                unmaskedText.length <= decimalDigits -> {
+                    max(unmaskedText.length - (maskedText.length - offset), 0)
+                }
+
+                else -> {
+                    offset - maskedText.take(offset).count { !it.isDigit() }
+                }
+            }
+
+        private fun offsetMaskCount(
+            offset: Int,
+            maskedText: String,
+        ): Int {
+            var maskOffsetCount = 0
+            var dataCount = 0
+            for (maskChar in maskedText) {
+                if (!maskChar.isDigit()) {
+                    maskOffsetCount++
+                } else if (++dataCount > offset) {
+                    break
+                }
+            }
+            return maskOffsetCount
+        }
+    }
 }

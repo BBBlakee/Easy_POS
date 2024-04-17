@@ -1,5 +1,27 @@
+/*
+ *     The app is a simple point of sale system, mainly developed for small clubs without a
+ *     point of sale system. It was developed to simplify the calculation of the total price.
+ *
+ *     Copyright (C) 2024 Michael Gamperling
+ *
+ *     This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation; either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License along
+ *     with this program; if not, write to the Free Software Foundation, Inc.,
+ *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package com.example.pos_moneylist.ui.settingsScreen.addProductScreen
 
+import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +40,6 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -52,7 +73,6 @@ import com.example.pos_moneylist.data.productList.Product
  * it to the product list.
  * @param onNameChange Function to check, if product already exists.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductDialog(
     onDismissRequest: () -> Unit,
@@ -88,7 +108,7 @@ fun AddProductDialog(
                     onValueChange = { name ->
                         nameIsValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
-                        productName = name
+                        productName = name.trim()
                     },
                     colors = if (nameIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
@@ -97,19 +117,23 @@ fun AddProductDialog(
                     }
                 )
 
-                //Product price
+                //Product price TODO change to visual transformation
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
                     onValueChange = { price ->
-                        priceIsValid = price.isNotEmpty() and !price.startsWith("-")
                         priceIsValid = try {
                             price.toFloat()
                             true
                         } catch (e: NumberFormatException) {
                             false
                         }
-                        productPrice = price
+
+                        productPrice = if (price.startsWith("0")) {
+                            ""
+                        } else {
+                            price.trim()
+                        }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = if (priceIsValid) {
@@ -117,7 +141,7 @@ fun AddProductDialog(
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
                     },
-                    //visualTransformation = CurrencyAmountVisualTransformation()
+                    visualTransformation = CurrencyAmountInputVisualTransformation()
                 )
 
                 //Product color - TODO change later to ColorSelector
@@ -176,7 +200,7 @@ fun AddProductDialog(
                             onConfirm(
                                 Product(
                                     name = productName,
-                                    price = productPrice.toFloat(),
+                                    price = productPrice.toFloat() / 100.00f,
                                     color = productColor
                                 )
                             )

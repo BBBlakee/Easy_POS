@@ -1,5 +1,27 @@
+/*
+ *     The app is a simple point of sale system, mainly developed for small clubs without a
+ *     point of sale system. It was developed to simplify the calculation of the total price.
+ *
+ *     Copyright (C) 2024 Michael Gamperling
+ *
+ *     This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation; either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License along
+ *     with this program; if not, write to the Free Software Foundation, Inc.,
+ *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package com.example.pos_moneylist.ui.settingsScreen.productDetailsAndEditScreen
 
+import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,7 +78,11 @@ fun ProductDetailsAndEditDialog(
 
 
     var productName: String by remember { mutableStateOf(product.name) }
-    var productPrice: String by remember { mutableStateOf(product.price.toString()) }
+    var productPrice: String by remember {
+        mutableStateOf(
+            (product.price * 10f).toString().replace(".", "")
+        )
+    }
     var productColor: Color by remember { mutableStateOf(product.color) }
 
     var isNameValid: Boolean by remember { mutableStateOf(true) }
@@ -82,7 +108,7 @@ fun ProductDetailsAndEditDialog(
                         isNameValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
                         changesMade = true
-                        productName = name
+                        productName = name.trim()
                     },
                     colors = if (isNameValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
@@ -95,16 +121,19 @@ fun ProductDetailsAndEditDialog(
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
-                    onValueChange = {
-                        isPriceValid = it.isNotEmpty() and !it.startsWith("-")
+                    onValueChange = { price ->
                         changesMade = true
                         isPriceValid = try {
-                            it.toFloat()
+                            price.toFloat()
                             true
                         } catch (e: NumberFormatException) {
                             false
                         }
-                        productPrice = it
+                        productPrice = if (price.startsWith("0")) {
+                            ""
+                        } else {
+                            price.trim()
+                        }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = if (isPriceValid) {
@@ -112,7 +141,7 @@ fun ProductDetailsAndEditDialog(
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
                     },
-                    //visualTransformation = CurrencyAmountVisualTransformation()
+                    visualTransformation = CurrencyAmountInputVisualTransformation()
                 )
 
                 //Product color - TODO change later to ColorSelector
@@ -176,7 +205,7 @@ fun ProductDetailsAndEditDialog(
                         enabled = isConfirmButtonEnabled,
                         onClick = {
                             product.name = productName
-                            product.price = productPrice.toFloat()
+                            product.price = productPrice.toFloat() / 100.00f
                             product.color = productColor
                             onConfirm()
                         },
