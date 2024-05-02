@@ -26,7 +26,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pos_moneylist.ui.about.AboutScreenViewModel
 import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
-import com.example.pos_moneylist.ui.productListScreen.ProductListScreenViewModel
+import com.example.pos_moneylist.ui.settingsScreen.SettingsScreenViewModel
 
 object ViewModelProvider {
     val Factory = viewModelFactory {
@@ -40,7 +40,7 @@ object ViewModelProvider {
         }
 
         initializer {
-            ProductListScreenViewModel()
+            SettingsScreenViewModel()
         }
         initializer {
             AboutScreenViewModel()
