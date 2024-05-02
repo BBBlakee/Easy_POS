@@ -13,4 +13,5 @@
     <string name="drawer_item_home">Home</string>
     <string name="clear_button">Checkout</string>
     <string name="add_product_name">Name</string>
+    <string name="delete_warning_title">Really delete the product \"%1s\"?</string>
 </resources>

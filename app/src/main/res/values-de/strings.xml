@@ -12,4 +12,5 @@
     <string name="drawer_item_home">Start</string>
     <string name="clear_button">Bezahlen</string>
     <string name="add_product_name">Name</string>
+    <string name="delete_warning_title">Das Produkt \"%1s\" wirklich löschen?</string>
 </resources>

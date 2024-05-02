@@ -40,7 +40,7 @@ class CurrencyAmountInputVisualTransformation(
 
         val inputText = text.text
 
-        val intPart = inputText
+        var intPart = inputText
             .dropLast(numberOfDecimals)
             .reversed()
             .chunked(3)
@@ -49,6 +49,7 @@ class CurrencyAmountInputVisualTransformation(
             .ifEmpty {
                 zero.toString()
             }
+
 
         val fractionPart = inputText.takeLast(numberOfDecimals).let {
             if (it.length != numberOfDecimals) {
@@ -59,6 +60,8 @@ class CurrencyAmountInputVisualTransformation(
                 it
             }
         }
+
+        if (intPart == "-") intPart = "-0"
 
         val formattedNumber = intPart + decimalSeparator + fractionPart
 

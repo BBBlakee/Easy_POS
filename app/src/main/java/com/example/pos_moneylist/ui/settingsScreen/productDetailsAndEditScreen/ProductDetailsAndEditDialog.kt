@@ -39,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -48,6 +49,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,8 +59,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
@@ -88,6 +92,7 @@ fun ProductDetailsAndEditDialog(
     var isNameValid: Boolean by remember { mutableStateOf(true) }
     var isPriceValid: Boolean by remember { mutableStateOf(true) }
     var changesMade: Boolean by remember { mutableStateOf(false) }
+    var showDeleteWarning: Boolean by remember { mutableStateOf(false) }
 
     val isConfirmButtonEnabled: Boolean = isNameValid and isPriceValid and changesMade
 
@@ -100,6 +105,12 @@ fun ProductDetailsAndEditDialog(
                     .padding(10.dp)
                     .fillMaxWidth(),
             ) {
+                Text(
+                    text = "Product information",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(10.dp)
+                )
                 //Product name
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
@@ -135,7 +146,7 @@ fun ProductDetailsAndEditDialog(
                             price.trim()
                         }
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     colors = if (isPriceValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
@@ -165,11 +176,10 @@ fun ProductDetailsAndEditDialog(
                                     border = if (productColor == color) {
                                         BorderStroke(width = 3.dp, color = Color.Black)
                                     } else {
-                                        BorderStroke(width = 3.dp, color = Color.White)
+                                        BorderStroke(width = 3.dp, color = Color.LightGray)
                                     },
                                     contentPadding = PaddingValues(0.dp),
-                                    modifier = Modifier
-                                        .size(50.dp)
+                                    modifier = Modifier.size(50.dp)
                                 ) {
 
                                 }
@@ -185,7 +195,7 @@ fun ProductDetailsAndEditDialog(
                 ) {
                     //Delete button
                     IconButton(
-                        onClick = { onDelete(product) },
+                        onClick = { showDeleteWarning = true },
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,
@@ -219,5 +229,31 @@ fun ProductDetailsAndEditDialog(
                 }
             }
         }
+    }
+
+    if (showDeleteWarning) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete(product)
+                    showDeleteWarning = false
+                }) {
+                    Text(text = stringResource(id = R.string.button_delete), color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteWarning = false }) {
+                    Text(text = stringResource(id = R.string.button_cancel))
+                }
+            },
+            title = {
+                Text(
+                    text = String.format(
+                        stringResource(R.string.delete_warning_title),
+                        product.name
+                    )
+                )
+            })
     }
 }

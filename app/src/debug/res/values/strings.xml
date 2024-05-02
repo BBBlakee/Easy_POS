@@ -14,4 +14,5 @@
     <string name="drawer_item_home" translatable="false">Home</string>
     <string name="clear_button" translatable="false">Checkout</string>
     <string name="add_product_name" translatable="false">Name</string>
+    <string name="delete_warning_title">Really delete the product \"%1s\"?</string>
 </resources>

@@ -56,8 +56,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
@@ -101,6 +103,12 @@ fun AddProductDialog(
                     .padding(10.dp)
                     .fillMaxWidth(),
             ) {
+                Text(
+                    text = "Add Product",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(10.dp)
+                )
                 //Product name
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
@@ -135,7 +143,7 @@ fun AddProductDialog(
                             price.trim()
                         }
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     colors = if (priceIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
@@ -167,7 +175,7 @@ fun AddProductDialog(
                                     border = if (selectedColor == color) {
                                         BorderStroke(width = 3.dp, color = Color.Black)
                                     } else {
-                                        BorderStroke(width = 3.dp, color = Color.White)
+                                        BorderStroke(width = 3.dp, color = Color.LightGray)
                                     },
                                     contentPadding = PaddingValues(0.dp),
                                     modifier = Modifier
