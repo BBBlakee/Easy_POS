@@ -24,6 +24,7 @@ package com.example.pos_moneylist
 import com.example.pos_moneylist.data.productColorList.ProductColorList
 import com.example.pos_moneylist.data.productList.ProductList
 import com.example.pos_moneylist.data.saleItemList.SaleItemList
+import com.example.pos_moneylist.persistence.ProductListManager
 import io.paperdb.Paper
 
 /**
@@ -35,23 +36,33 @@ import io.paperdb.Paper
  */
 object Controller {
 
-    val productList: ProductList = loadProductList()
+    private val productListManager = ProductListManager()
+    var productLists: List<ProductList> = loadProductLists()
     val saleItemList: SaleItemList = SaleItemList()
     val productColorList: ProductColorList = loadProductColorList()
 
-    fun saveProductList() {
-        Paper.book().write("productList", productList)
+    fun saveProductLists() {
+        productListManager.saveLists(productLists)
     }
 
-    private fun loadProductList(): ProductList {
-        return Paper.book().read("productList") ?: ProductList()
+    private fun loadProductLists(): List<ProductList> {
+        val lists: ArrayList<ProductList> = ArrayList()
+
+        val keys = Paper.book("products").allKeys
+        keys.forEach { key ->
+            lists.add(
+                Paper.book("products").read<ProductList>(key) ?: ProductList("test")
+            )
+        }
+        lists.sortWith(compareBy { it.name })
+        return lists
     }
 
     fun saveProductColorList() {
-        Paper.book().write("productColorList", productColorList)
+        Paper.book("extra").write("productColorList", productColorList)
     }
 
     private fun loadProductColorList(): ProductColorList {
-        return Paper.book().read("productColorList") ?: ProductColorList()
+        return Paper.book("extra").read("productColorList") ?: ProductColorList()
     }
 }

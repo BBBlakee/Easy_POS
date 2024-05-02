@@ -19,7 +19,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.example.pos_moneylist.ui.settingsScreen.addProductScreen
+package com.example.pos_moneylist.ui.productListScreen.productDetailsAndEditScreen
 
 import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
@@ -38,6 +38,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -47,6 +49,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,34 +68,33 @@ import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
 
-/**
- * Dialog if a new product should be added to the product list. The dialog takes the name, price and
- * color and creates a new [Product]. The price text field checks, if the input is a currency. The name
- * text field checks, if the product already exists.
- * @param onDismissRequest What should happen if the user clicks outside the dialog?
- * @param onCancel What should happen, if the user cancels the dialog?
- * @param onConfirm What should happen, if the user confirms the dialog? Creates the product and adds
- * it to the product list.
- * @param onNameChange Function to check, if product already exists.
- */
 @Composable
-fun AddProductDialog(
+fun ProductDetailsAndEditDialog(
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onConfirm: (product: Product) -> Unit,
+    onConfirm: () -> Unit,
     onNameChange: (product: Product) -> Boolean,
+    onDelete: (product: Product) -> Unit,
+    product: Product,
 ) {
 
-    var productName: String by remember { mutableStateOf("") }
-    var productPrice: String by remember { mutableStateOf("") }
-    var productColor: Color by remember { mutableStateOf(Color.Unspecified) }
-
-    var nameIsValid: Boolean by remember { mutableStateOf(false) }
-    var priceIsValid: Boolean by remember { mutableStateOf(false) }
-
-    val isConfirmButtonEnabled: Boolean = nameIsValid and priceIsValid
-
     val colorList = remember { Controller.productColorList.productColorList }
+
+
+    var productName: String by remember { mutableStateOf(product.name) }
+    var productPrice: String by remember {
+        mutableStateOf(
+            (product.price * 10f).toString().replace(".", "")
+        )
+    }
+    var productColor: Color by remember { mutableStateOf(product.color) }
+
+    var isNameValid: Boolean by remember { mutableStateOf(true) }
+    var isPriceValid: Boolean by remember { mutableStateOf(true) }
+    var changesMade: Boolean by remember { mutableStateOf(false) }
+    var showDeleteWarning: Boolean by remember { mutableStateOf(false) }
+
+    val isConfirmButtonEnabled: Boolean = isNameValid and isPriceValid and changesMade
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(modifier = Modifier.fillMaxWidth(0.6f)) {
@@ -104,7 +106,7 @@ fun AddProductDialog(
                     .fillMaxWidth(),
             ) {
                 Text(
-                    text = "Add Product",
+                    text = "Product information",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(10.dp)
@@ -114,29 +116,30 @@ fun AddProductDialog(
                     label = { Text(text = stringResource(R.string.add_product_name)) },
                     value = productName,
                     onValueChange = { name ->
-                        nameIsValid =
+                        isNameValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
+                        changesMade = true
                         productName = name.trim()
                     },
-                    colors = if (nameIsValid) {
+                    colors = if (isNameValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
                     }
                 )
 
-                //Product price TODO change to visual transformation
+                //Product price
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
                     onValueChange = { price ->
-                        priceIsValid = try {
+                        changesMade = true
+                        isPriceValid = try {
                             price.toFloat()
                             true
                         } catch (e: NumberFormatException) {
                             false
                         }
-
                         productPrice = if (price.startsWith("0")) {
                             ""
                         } else {
@@ -144,7 +147,7 @@ fun AddProductDialog(
                         }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    colors = if (priceIsValid) {
+                    colors = if (isPriceValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
                     } else {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red)
@@ -159,8 +162,6 @@ fun AddProductDialog(
                         modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
                     ) {
 
-                        var selectedColor: Color by remember { mutableStateOf(Color.Unspecified) }
-
                         Text(text = stringResource(R.string.color))
                         LazyRow {
                             items(items = colorList, key = { it.hashCode() }) { color ->
@@ -168,19 +169,17 @@ fun AddProductDialog(
                                 OutlinedButton(
                                     onClick = {
                                         productColor = color
-                                        selectedColor = color
+                                        changesMade = true
                                     },
                                     colors = ButtonDefaults.outlinedButtonColors(containerColor = color),
                                     shape = CircleShape,
-                                    border = if (selectedColor == color) {
+                                    border = if (productColor == color) {
                                         BorderStroke(width = 3.dp, color = Color.Black)
                                     } else {
                                         BorderStroke(width = 3.dp, color = Color.LightGray)
                                     },
                                     contentPadding = PaddingValues(0.dp),
-                                    modifier = Modifier
-                                        .size(50.dp)
-
+                                    modifier = Modifier.size(50.dp)
                                 ) {
 
                                 }
@@ -194,6 +193,16 @@ fun AddProductDialog(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    //Delete button
+                    IconButton(
+                        onClick = { showDeleteWarning = true },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.button_delete),
+                            tint = Color.Red
+                        )
+                    }
                     //Cancel button
                     IconButton(onClick = onCancel) {
                         Icon(
@@ -205,13 +214,10 @@ fun AddProductDialog(
                     IconButton(
                         enabled = isConfirmButtonEnabled,
                         onClick = {
-                            onConfirm(
-                                Product(
-                                    name = productName,
-                                    price = productPrice.toFloat() / 100.00f,
-                                    color = productColor
-                                )
-                            )
+                            product.name = productName
+                            product.price = productPrice.toFloat() / 100.00f
+                            product.color = productColor
+                            onConfirm()
                         },
                     ) {
                         Icon(
@@ -223,5 +229,31 @@ fun AddProductDialog(
                 }
             }
         }
+    }
+
+    if (showDeleteWarning) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete(product)
+                    showDeleteWarning = false
+                }) {
+                    Text(text = stringResource(id = R.string.button_delete), color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteWarning = false }) {
+                    Text(text = stringResource(id = R.string.button_cancel))
+                }
+            },
+            title = {
+                Text(
+                    text = String.format(
+                        stringResource(R.string.delete_warning_title),
+                        product.name
+                    )
+                )
+            })
     }
 }

@@ -54,9 +54,9 @@ import com.example.pos_moneylist.ui.home.DestinationHome
 import com.example.pos_moneylist.ui.home.HomeScreen
 import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
-import com.example.pos_moneylist.ui.settingsScreen.DestinationSettings
-import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
-import com.example.pos_moneylist.ui.settingsScreen.SettingsScreenViewModel
+import com.example.pos_moneylist.ui.productListScreen.DestinationSettings
+import com.example.pos_moneylist.ui.productListScreen.ProductListScreenViewModel
+import com.example.pos_moneylist.ui.productListScreen.SettingsScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +68,7 @@ fun MoneyListNavHost(
     val productAreaViewModel: ProductAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val receiptAreaViewModel: ReceiptAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val aboutScreenViewModel: AboutScreenViewModel = viewModel(factory = ViewModelProvider.Factory)
-    val settingsScreenViewModel: SettingsScreenViewModel =
+    val productListScreenViewModel: ProductListScreenViewModel =
         viewModel(factory = ViewModelProvider.Factory)
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -141,7 +141,7 @@ fun MoneyListNavHost(
 
                 composable(route = DestinationSettings.route) {
                     SettingsScreen(
-                        settingsScreenViewModel = settingsScreenViewModel,
+                        productListScreenViewModel = productListScreenViewModel,
                         innerPadding = innerPadding
                     )
                 }
