@@ -7,11 +7,12 @@
     <string name="color">Color</string>
     <string name="button_delete">Delete</string>
     <string name="title_about_screen">About</string>
-    <string name="title_settings_screen">Settings</string>
+    <string name="title_Lists_screen">Product lists</string>
     <string name="app_github_page" translatable="false">https://github.com/BBBlakee/Product_Calculator</string>
     <string name="drawer_title">Menu</string>
     <string name="drawer_item_home">Home</string>
     <string name="clear_button">Checkout</string>
     <string name="add_product_name">Name</string>
     <string name="delete_warning_title">Really delete the product \"%1s\"?</string>
+    <string name="add_list_title">Add list</string>
 </resources>

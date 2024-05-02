@@ -21,25 +21,37 @@
 
 package com.example.pos_moneylist.ui.home.productArea
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.R
+import com.example.pos_moneylist.data.productList.ProductList
 import com.example.pos_moneylist.data.saleItemList.SaleItem
 
 @Composable
@@ -50,9 +62,12 @@ fun ProductArea(
     onProductButtonClicked: (SaleItem) -> Unit,
 ) {
 
-    val productList = remember { productAreaViewModel.productList.productList }
+    val productLists = remember { productAreaViewModel.productLists }
+    var selectedListIndex by remember { mutableIntStateOf(0) }
 
-    if (productList.isEmpty()) {
+    productAreaViewModel.sortLists()
+
+    if (productLists.all { it.length != 0 }) {
         Box(
             contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()
         ) {
@@ -63,19 +78,47 @@ fun ProductArea(
             )
         }
     } else {
-        LazyVerticalGrid(
-            contentPadding = PaddingValues(10.dp),
-            columns = GridCells.Fixed(gridColumns),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(items = productList, key = { it.name }) { product ->
-                ProductButton(
-                    name = product.name,
-                    price = product.price,
-                    color = if (product.color == Color.Unspecified) ButtonDefaults.filledTonalButtonColors().containerColor else product.color,
-                    onClick = { onProductButtonClicked(SaleItem(product)) })
+        Column {
+            //Product list selector
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
+            ) {
+                itemsIndexed(items = productLists,
+                    key = { index: Int, item: ProductList -> item.name + index.toString() }) { index, list ->
+                    OutlinedButton(
+                        onClick = {
+                            selectedListIndex = productAreaViewModel.getListIndex(list.name)
+                        },
+                        border = if (selectedListIndex == index) BorderStroke(
+                            width = 3.dp, color = Color.Black
+                        ) else BorderStroke(width = 1.dp, color = Color.LightGray),
+                        modifier = Modifier.padding(5.dp)
+                    ) {
+                        Text(
+                            text = list.name,
+                            fontWeight = if (selectedListIndex == index) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+            LazyVerticalGrid(
+                contentPadding = PaddingValues(10.dp),
+                columns = GridCells.Fixed(gridColumns),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(
+                    items = productLists[selectedListIndex].productList,
+                    key = { it.name }) { product ->
+                    ProductButton(name = product.name,
+                        price = product.price,
+                        color = if (product.color == Color.Unspecified) ButtonDefaults.filledTonalButtonColors().containerColor else product.color,
+                        onClick = { onProductButtonClicked(SaleItem(product)) })
+                }
             }
         }
+
     }
 }

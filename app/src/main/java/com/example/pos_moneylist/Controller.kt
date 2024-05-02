@@ -21,6 +21,8 @@
 
 package com.example.pos_moneylist
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.pos_moneylist.data.productColorList.ProductColorList
 import com.example.pos_moneylist.data.productList.ProductList
 import com.example.pos_moneylist.data.saleItemList.SaleItemList
@@ -35,23 +37,36 @@ import io.paperdb.Paper
  */
 object Controller {
 
-    val productList: ProductList = loadProductList()
+    val productLists: SnapshotStateList<ProductList> = loadProductList()
     val saleItemList: SaleItemList = SaleItemList()
     val productColorList: ProductColorList = loadProductColorList()
 
-    fun saveProductList() {
-        Paper.book().write("productList", productList)
+    fun saveProductLists() {
+        productLists.forEach { list ->
+            Paper.book("products").write(list.name, list)
+        }
     }
 
-    private fun loadProductList(): ProductList {
-        return Paper.book().read("productList") ?: ProductList()
+    private fun loadProductList(): SnapshotStateList<ProductList> {
+        val keys = Paper.book("products").allKeys
+        val list: SnapshotStateList<ProductList> = mutableStateListOf()
+
+        keys.forEach { key ->
+            list.add(Paper.book("products").read(key) ?: ProductList("test"))
+        }
+
+        return list
+    }
+
+    fun deleteProductList(listName: String) {
+        Paper.book("products").delete(listName)
     }
 
     fun saveProductColorList() {
-        Paper.book().write("productColorList", productColorList)
+        Paper.book("extra").write("productColorList", productColorList)
     }
 
     private fun loadProductColorList(): ProductColorList {
-        return Paper.book().read("productColorList") ?: ProductColorList()
+        return Paper.book("extra").read("productColorList") ?: ProductColorList()
     }
 }

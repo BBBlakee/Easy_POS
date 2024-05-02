@@ -29,7 +29,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
  * @property productList List of all added products
  * @property length Amount of products in the list.
  */
-class ProductList : Iterable<Product> {
+class ProductList(val name: String) : Iterable<Product> {
     var productList: SnapshotStateList<Product> = mutableStateListOf()
     val length: Int
         get() = productList.count()

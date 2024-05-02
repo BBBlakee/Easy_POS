@@ -19,16 +19,57 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.example.pos_moneylist.ui.home.productArea
+package com.example.pos_moneylist.ui.productListsScreen
 
 import androidx.lifecycle.ViewModel
 import com.example.pos_moneylist.Controller
+import com.example.pos_moneylist.data.productList.Product
+import com.example.pos_moneylist.data.productList.ProductList
 
-class ProductAreaViewModel : ViewModel() {
+class ProductListsScreenViewModel : ViewModel() {
     val productLists = Controller.productLists
 
     fun getListIndex(listName: String): Int {
         return productLists.indexOfFirst { list -> list.name == listName }
+    }
+
+    fun addList(listName: String): Boolean {
+        if (containsList(listName = listName)) {
+            return false
+        }
+        return productLists.add(ProductList(listName))
+    }
+
+    fun containsList(listName: String): Boolean {
+        return productLists.indexOfFirst { list -> list.name == listName } != -1
+    }
+
+    fun addProduct(
+        listIndex: Int,
+        product: Product,
+    ) {
+        productLists[listIndex].apply {
+            add(product = product)
+            sortList()
+        }
+    }
+
+    fun containsProduct(
+        listIndex: Int,
+        product: Product,
+    ): Boolean {
+        return productLists[listIndex].contains(product = product)
+    }
+
+    fun removeProduct(
+        listIndex: Int,
+        product: Product,
+    ) {
+        productLists[listIndex].remove(product)
+    }
+
+    fun removeList(listIndex: Int) {
+        productLists.removeAt(listIndex)
     }
 
     fun sortLists() {
@@ -36,4 +77,3 @@ class ProductAreaViewModel : ViewModel() {
         productLists.sortWith(compareBy { it.name })
     }
 }
-

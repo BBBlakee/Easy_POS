@@ -19,7 +19,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.example.pos_moneylist.ui.settingsScreen.addProductScreen
+package com.example.pos_moneylist.ui.productListsScreen.addProductScreen
 
 import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke

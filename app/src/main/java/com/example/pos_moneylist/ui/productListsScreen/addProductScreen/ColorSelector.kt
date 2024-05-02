@@ -19,28 +19,26 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.example.pos_moneylist.ui.settingsScreen
+package com.example.pos_moneylist.ui.productListsScreen.addProductScreen
 
-import androidx.lifecycle.ViewModel
-import com.example.pos_moneylist.Controller
-import com.example.pos_moneylist.data.productList.Product
+/*
+@Composable
+fun ColorSelector() {
 
-class SettingsScreenViewModel : ViewModel() {
-    val productList = Controller.productList
+    val colorList = remember { Controller.productColorList.productColorList }
 
-    fun addProduct(product: Product) {
-        productList.add(product)
-    }
+    LazyRow {
+        items(items = colorList, key = { it.hashCode() }) { color ->
+            OutlinedButton(
+                onClick = { productColor = color },
+                colors = ButtonDefaults.buttonColors(containerColor = color),
+                shape = CircleShape,
+                modifier = Modifier.size(50.dp)
+            ) {
 
-    fun contains(product: Product): Boolean {
-        return productList.contains(product = product)
-    }
-
-    fun remove(product: Product) {
-        productList.remove(product)
-    }
-
-    fun sortList() {
-        productList.sortList()
+            }
+        }
     }
 }
+
+ */

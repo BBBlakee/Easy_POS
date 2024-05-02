@@ -22,12 +22,12 @@
 package com.example.pos_moneylist.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -54,9 +54,9 @@ import com.example.pos_moneylist.ui.home.DestinationHome
 import com.example.pos_moneylist.ui.home.HomeScreen
 import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
-import com.example.pos_moneylist.ui.settingsScreen.DestinationSettings
-import com.example.pos_moneylist.ui.settingsScreen.SettingsScreen
-import com.example.pos_moneylist.ui.settingsScreen.SettingsScreenViewModel
+import com.example.pos_moneylist.ui.productListsScreen.DestinationSettings
+import com.example.pos_moneylist.ui.productListsScreen.ProductListsScreenViewModel
+import com.example.pos_moneylist.ui.productListsScreen.SettingsScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +68,7 @@ fun MoneyListNavHost(
     val productAreaViewModel: ProductAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val receiptAreaViewModel: ReceiptAreaViewModel = viewModel(factory = ViewModelProvider.Factory)
     val aboutScreenViewModel: AboutScreenViewModel = viewModel(factory = ViewModelProvider.Factory)
-    val settingsScreenViewModel: SettingsScreenViewModel =
+    val productListsScreenViewModel: ProductListsScreenViewModel =
         viewModel(factory = ViewModelProvider.Factory)
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -86,9 +86,9 @@ fun MoneyListNavHost(
                         iconSelected = Icons.Filled.Home
                     ), DrawerItem(
                         id = "settings",
-                        name = stringResource(R.string.title_settings_screen),
-                        icon = Icons.Outlined.Settings,
-                        iconSelected = Icons.Filled.Settings
+                        name = stringResource(R.string.title_Lists_screen),
+                        icon = Icons.AutoMirrored.Outlined.List,
+                        iconSelected = Icons.AutoMirrored.Filled.List
                     ), DrawerItem(
                         id = "about",
                         name = stringResource(R.string.title_about_screen),
@@ -141,7 +141,7 @@ fun MoneyListNavHost(
 
                 composable(route = DestinationSettings.route) {
                     SettingsScreen(
-                        settingsScreenViewModel = settingsScreenViewModel,
+                        productListsScreenViewModel = productListsScreenViewModel,
                         innerPadding = innerPadding
                     )
                 }
