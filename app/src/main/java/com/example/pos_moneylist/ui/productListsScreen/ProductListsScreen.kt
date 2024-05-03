@@ -315,7 +315,9 @@ fun SettingsScreen(
 
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
                         ) {
                             //Delete button
                             TextButton(onClick = {
@@ -326,10 +328,13 @@ fun SettingsScreen(
                                 Controller.saveProductLists()
                                 showEditListScreen = false
                             }) {
-                                Text(text = stringResource(id = R.string.button_delete))
+                                Text(
+                                    text = stringResource(id = R.string.button_delete),
+                                    color = Color.Red
+                                )
                             }
 
-                            Spacer(modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.size(60.dp))
 
                             //Cancel button
                             TextButton(onClick = { showEditListScreen = false }) {
