@@ -1,3 +1,9 @@
+# Information
+
+The app is a simple point of sale system, mainly developed for small clubs without a point of sale system. It was developed to simplify the calculation of the total price.
+
+
+# Copyright
 ```
 /*
  *     The app is a simple point of sale system, mainly developed for small clubs without a
