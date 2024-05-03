@@ -41,6 +41,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.twotone.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -286,6 +287,9 @@ fun SettingsScreen(
             var changesMade: Boolean by remember {
                 mutableStateOf(false)
             }
+            var showDeleteWarning: Boolean by remember {
+                mutableStateOf(false)
+            }
 
             Dialog(onDismissRequest = { showEditListScreen = false }) {
                 Card(modifier = Modifier.fillMaxWidth(0.6f)) {
@@ -321,12 +325,7 @@ fun SettingsScreen(
                         ) {
                             //Delete button
                             TextButton(onClick = {
-                                Controller.deleteProductList(productLists[selectedListIndex].name)
-                                productListsScreenViewModel.removeList(selectedListIndex)
-                                selectedListIndex = 0
-                                productListsScreenViewModel.sortLists()
-                                Controller.saveProductLists()
-                                showEditListScreen = false
+                                showDeleteWarning = true
                             }) {
                                 Text(
                                     text = stringResource(id = R.string.button_delete),
@@ -354,6 +353,40 @@ fun SettingsScreen(
                     }
                 }
             }
+            if (showDeleteWarning) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteWarning = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            Controller.deleteProductList(productLists[selectedListIndex].name)
+                            productListsScreenViewModel.removeList(selectedListIndex)
+                            selectedListIndex = 0
+                            productListsScreenViewModel.sortLists()
+                            Controller.saveProductLists()
+                            showEditListScreen = false
+                            showDeleteWarning = false
+                        }) {
+                            Text(
+                                text = stringResource(id = R.string.button_delete),
+                                color = Color.Red
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteWarning = false }) {
+                            Text(text = stringResource(id = R.string.button_cancel))
+                        }
+                    },
+                    title = {
+                        Text(
+                            text = String.format(
+                                "Really delete the list %1s",
+                                productLists[selectedListIndex].name
+                            )
+                        )
+                    })
+            }
         }
+
     }
 }

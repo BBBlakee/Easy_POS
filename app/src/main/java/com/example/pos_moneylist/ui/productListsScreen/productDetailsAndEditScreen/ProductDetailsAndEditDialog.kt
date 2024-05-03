@@ -233,7 +233,7 @@ fun ProductDetailsAndEditDialog(
 
     if (showDeleteWarning) {
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = { showDeleteWarning = false },
             confirmButton = {
                 TextButton(onClick = {
                     onDelete(product)

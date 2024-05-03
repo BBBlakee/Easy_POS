@@ -3,7 +3,8 @@
 The app is a simple point of sale system, mainly developed for small clubs without a point of sale system. It was developed to simplify the calculation of the total price.
 
 This is my first android app.
-The next steps would be to update the viewModels to provide a uiState and create a consistent UI.
+The next steps would be to add code comments, update the viewModels to provide a uiState and create
+a consistent UI.
 I am happy about all helpful information to make the app even better :)
 
 

@@ -1,5 +1,5 @@
-val versionMajor = 0
-val versionMinor = 9
+val versionMajor = 1
+val versionMinor = 0
 val versionPatch = 0
 
 plugins {
