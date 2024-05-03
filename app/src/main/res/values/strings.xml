@@ -15,4 +15,7 @@
     <string name="add_product_name">Name</string>
     <string name="delete_warning_title">Really delete the product \"%1s\"?</string>
     <string name="add_list_title">Add list</string>
+    <string name="edit_list_title">Information</string>
+    <string name="add_list">Add list</string>
+    <string name="add_product_to_1s">Add product to %1s</string>
 </resources>

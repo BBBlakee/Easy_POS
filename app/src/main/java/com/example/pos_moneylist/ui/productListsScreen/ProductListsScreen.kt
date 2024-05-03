@@ -24,6 +24,7 @@ package com.example.pos_moneylist.ui.productListsScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,12 +41,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.twotone.Add
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,6 +64,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
@@ -98,25 +101,24 @@ fun SettingsScreen(
             Column(horizontalAlignment = Alignment.End) {
 
                 ExtendedFloatingActionButton(
-                    onClick = { showAddListScreen = true },
-                    modifier = Modifier.padding(5.dp)
+                    onClick = { showAddListScreen = true }, modifier = Modifier.padding(5.dp)
                 ) {
                     Icon(
                         Icons.TwoTone.Add, contentDescription = "Add list button"
                     )
-                    Text(text = "Add list")
+                    Text(text = stringResource(R.string.add_list))
                 }
                 if (showProductList) {
                     ExtendedFloatingActionButton(
-                        onClick = { showAddProductScreen = true },
-                        modifier = Modifier.padding(5.dp)
+                        onClick = { showAddProductScreen = true }, modifier = Modifier.padding(5.dp)
                     ) {
                         Icon(
                             Icons.TwoTone.Add, contentDescription = "Add product button"
                         )
                         Text(
                             text = String.format(
-                                "Add product to %1s", productLists[selectedListIndex].name
+                                stringResource(R.string.add_product_to_1s),
+                                productLists[selectedListIndex].name
                             )
                         )
                     }
@@ -149,8 +151,7 @@ fun SettingsScreen(
                                     productListsScreenViewModel.getListIndex(list.name)
                             },
                             border = if (selectedListIndex == index) BorderStroke(
-                                width = 3.dp,
-                                color = Color.Black
+                                width = 3.dp, color = Color.Black
                             ) else BorderStroke(width = 1.dp, color = Color.LightGray),
                             modifier = Modifier.padding(5.dp)
                         ) {
@@ -275,33 +276,79 @@ fun SettingsScreen(
         }
 
         if (showEditListScreen) {
-            AlertDialog(
-                onDismissRequest = { showEditListScreen = false },
-                confirmButton = {
-                    TextButton(onClick = {
-                        Controller.deleteProductList(productLists[selectedListIndex].name)
-                        productListsScreenViewModel.removeList(selectedListIndex)
-                        selectedListIndex = 0
-                        productListsScreenViewModel.sortLists()
-                        Controller.saveProductLists()
-                        showEditListScreen = false
-                    }) {
-                        Text(text = stringResource(id = R.string.button_delete))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showEditListScreen = false }) {
-                        Text(text = stringResource(id = R.string.button_cancel))
-                    }
-                },
-                title = {
-                    Text(
-                        text = String.format(
-                            "Really delete the list \"%1s\"?",
-                            productLists[selectedListIndex].name
+
+            var currListName: String by remember {
+                mutableStateOf(productLists[selectedListIndex].name)
+            }
+            var isNewNameValid: Boolean by remember {
+                mutableStateOf(true)
+            }
+            var changesMade: Boolean by remember {
+                mutableStateOf(false)
+            }
+
+            Dialog(onDismissRequest = { showEditListScreen = false }) {
+                Card(modifier = Modifier.fillMaxWidth(0.6f)) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth(),
+                    ) {
+                        //Title
+                        Text(
+                            text = stringResource(R.string.edit_list_title),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(10.dp)
                         )
-                    )
-                })
+                        //Content
+                        OutlinedTextField(value = currListName,
+                            onValueChange = {
+                                isNewNameValid =
+                                    !productListsScreenViewModel.containsList(it) and it.isNotEmpty()
+                                changesMade = true
+                                currListName = it
+                            },
+                            isError = !isNewNameValid,
+                            label = { Text(text = stringResource(id = R.string.add_product_name)) })
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            //Delete button
+                            TextButton(onClick = {
+                                Controller.deleteProductList(productLists[selectedListIndex].name)
+                                productListsScreenViewModel.removeList(selectedListIndex)
+                                selectedListIndex = 0
+                                productListsScreenViewModel.sortLists()
+                                Controller.saveProductLists()
+                                showEditListScreen = false
+                            }) {
+                                Text(text = stringResource(id = R.string.button_delete))
+                            }
+
+                            Spacer(modifier = Modifier.size(20.dp))
+
+                            //Cancel button
+                            TextButton(onClick = { showEditListScreen = false }) {
+                                Text(text = stringResource(id = R.string.button_cancel))
+                            }
+                            //Confirm button
+                            TextButton(onClick = {
+                                Controller.deleteProductList(productLists[selectedListIndex].name)
+                                productLists[selectedListIndex].name = currListName
+                                productListsScreenViewModel.sortLists()
+                                Controller.saveProductLists()
+                                showEditListScreen = false
+                            }, enabled = isNewNameValid and changesMade) {
+                                Text(text = stringResource(id = R.string.button_confirm))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

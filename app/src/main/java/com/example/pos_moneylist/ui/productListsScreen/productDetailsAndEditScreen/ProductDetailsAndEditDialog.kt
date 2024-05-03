@@ -23,11 +23,11 @@ package com.example.pos_moneylist.ui.productListsScreen.productDetailsAndEditScr
 
 import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -101,7 +101,6 @@ fun ProductDetailsAndEditDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .background(Color.White)
                     .padding(10.dp)
                     .fillMaxWidth(),
             ) {
@@ -203,6 +202,7 @@ fun ProductDetailsAndEditDialog(
                             tint = Color.Red
                         )
                     }
+                    Spacer(modifier = Modifier.size(20.dp))
                     //Cancel button
                     IconButton(onClick = onCancel) {
                         Icon(
