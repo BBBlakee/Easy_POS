@@ -65,32 +65,32 @@ fun ReceiptItem(
             )
         },
         trailingContent = {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = onPlusButtonClicked,
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.TwoTone.AddCircle,
-                    contentDescription = "Add sale item",
-                    modifier = Modifier.size(buttonSize)
+                IconButton(
+                    onClick = onPlusButtonClicked,
+                ) {
+                    Icon(
+                        imageVector = Icons.TwoTone.AddCircle,
+                        contentDescription = "Add sale item",
+                        modifier = Modifier.size(buttonSize)
+                    )
+                }
+                Text(
+                    text = "${counter}x", style = itemTextStyle
                 )
+                IconButton(onClick = onMinusButtonClicked) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.twotone_remove_circle),
+                        contentDescription = "Remove icon",
+                        modifier = Modifier.size(buttonSize),
+                    )
+                }
             }
-            Text(
-                text = "${counter}x", style = itemTextStyle
-            )
-            IconButton(onClick = onMinusButtonClicked) {
-                Icon(
-                    painter = painterResource(id = R.drawable.twotone_remove_circle),
-                    contentDescription = "Remove icon",
-                    modifier = Modifier.size(buttonSize),
-                )
-            }
-        }
 
-    },
+        },
         modifier = modifier
             .padding(vertical = 5.dp)
         //.border(BorderStroke(width = 1.dp, color = Color.Black), shape = RoundedCornerShape(15.dp))
