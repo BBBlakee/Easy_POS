@@ -11,11 +11,13 @@
     <string name="app_github_page" translatable="false">https://github.com/BBBlakee/Product_Calculator</string>
     <string name="drawer_title">Menu</string>
     <string name="drawer_item_home">Home</string>
-    <string name="clear_button">Checkout</string>
+    <string name="checkout_button">Checkout</string>
     <string name="add_product_name">Name</string>
     <string name="delete_warning_title">Really delete the product \"%1s\"?</string>
     <string name="add_list_title">Add list</string>
     <string name="edit_list_title">Information</string>
     <string name="add_list">Add list</string>
     <string name="add_product_to_1s">Add product to %1s</string>
+    <string name="change">change</string>
+    <string name="given">given</string>
 </resources>

@@ -10,11 +10,13 @@
     <string name="title_Lists_screen">Produktlisten</string>
     <string name="drawer_title">Menü</string>
     <string name="drawer_item_home">Start</string>
-    <string name="clear_button">Bezahlen</string>
+    <string name="checkout_button">Bezahlen</string>
     <string name="add_product_name">Name</string>
     <string name="delete_warning_title">Das Produkt \"%1s\" wirklich löschen?</string>
     <string name="edit_list_title">Information</string>
     <string name="add_list_title">Liste hinzufügen</string>
     <string name="add_list">Liste hinzufügen</string>
     <string name="add_product_to_1s">Produkt zu %1s hinzufügen</string>
+    <string name="change">Rückgeld</string>
+    <string name="given">Gegeben</string>
 </resources>

@@ -34,7 +34,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -51,6 +53,10 @@ fun ReceiptArea(
 
     val saleItemList = remember { receiptAreaViewModel.saleItemList.saleItemList }
     val total by remember { receiptAreaViewModel.saleItemList.total }
+
+    var showCheckoutView: Boolean by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = Modifier
@@ -80,7 +86,6 @@ fun ReceiptArea(
         }
         Row {
             Column {
-
                 HorizontalDivider(
                     Modifier.padding(vertical = 10.dp),
                     thickness = 2.dp
@@ -101,18 +106,30 @@ fun ReceiptArea(
                 )
 
                 Button(
-                    onClick = { receiptAreaViewModel.clear() },
+                    onClick = { showCheckoutView = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8B40)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.clear_button),
+                        text = stringResource(R.string.checkout_button),
                         fontSize = 30.sp
                     )
                 }
             }
         }
+    }
+
+    if (showCheckoutView) {
+        CheckoutDialog(
+            total = total,
+            onDismissRequest = { showCheckoutView = false },
+            onClickPayButton = {
+                receiptAreaViewModel.clear()
+                showCheckoutView = false
+            },
+            onClickDismissButton = { showCheckoutView = false })
+
     }
 }

@@ -114,7 +114,7 @@ fun AddProductDialog(
                     onValueChange = { name ->
                         nameIsValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
-                        productName = name.trim()
+                        productName = name
                     },
                     colors = if (nameIsValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
@@ -123,7 +123,7 @@ fun AddProductDialog(
                     }
                 )
 
-                //Product price TODO change to visual transformation
+                //Product price
                 OutlinedTextField(
                     label = { Text(text = stringResource(R.string.add_product_price)) },
                     value = productPrice,
@@ -205,7 +205,7 @@ fun AddProductDialog(
                         onClick = {
                             onConfirm(
                                 Product(
-                                    name = productName,
+                                    name = productName.trim(),
                                     price = productPrice.toFloat() / 100.00f,
                                     color = productColor
                                 )

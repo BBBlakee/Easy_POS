@@ -118,7 +118,7 @@ fun ProductDetailsAndEditDialog(
                         isNameValid =
                             !onNameChange(Product(name, 0.0f, Color.Black)) and name.isNotEmpty()
                         changesMade = true
-                        productName = name.trim()
+                        productName = name
                     },
                     colors = if (isNameValid) {
                         OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Black)
@@ -142,7 +142,7 @@ fun ProductDetailsAndEditDialog(
                         productPrice = if (price.startsWith("0")) {
                             ""
                         } else {
-                            price.trim()
+                            price
                         }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -214,7 +214,7 @@ fun ProductDetailsAndEditDialog(
                     IconButton(
                         enabled = isConfirmButtonEnabled,
                         onClick = {
-                            product.name = productName
+                            product.name = productName.trim()
                             product.price = productPrice.toFloat() / 100.00f
                             product.color = productColor
                             onConfirm()
