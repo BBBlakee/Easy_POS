@@ -8,7 +8,7 @@
     <string name="button_delete">Delete</string>
     <string name="title_about_screen">About</string>
     <string name="title_Lists_screen">Product lists</string>
-    <string name="app_github_page" translatable="false">https://github.com/BBBlakee/Product_Calculator</string>
+    <string name="app_github_page" translatable="false">https://github.com/BBBlakee/Simple_POS</string>
     <string name="drawer_title">Menu</string>
     <string name="drawer_item_home">Home</string>
     <string name="checkout_button">Checkout</string>
