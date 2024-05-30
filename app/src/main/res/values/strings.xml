@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Simple POS</string>
+    <string name="app_name" translatable="false">Easy POS</string>
     <string name="price">Price</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_confirm">Confirm</string>
