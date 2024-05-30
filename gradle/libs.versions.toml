@@ -1,0 +1,40 @@
+[versions]
+#plugins
+androidGradlePlugin = "8.4.1"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
+
+#libraries
+ktx = "1.13.1"
+runtime-ktx = "2.7.0"
+
+compose = "1.9.0"
+compose-bom = "2024.05.00"
+compose-ui = "1.6.7"
+compose-ui-graphics = "1.6.7"
+compose-ui-tooling-preview = "1.6.7"
+compose-material3 = "1.2.1"
+
+navigation = "2.7.7"
+
+paperDB = "2.7.2"
+
+[libraries]
+androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+androidx-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "runtime-ktx" }
+
+androidx-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "compose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose-ui" }
+androidx-compose-ui-grapics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "compose-ui-graphics" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose-ui-tooling-preview" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose-material3" }
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+
+paperDB = { group = "io.github.pilgr", name = "paperdb", version.ref = "paperDB" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
