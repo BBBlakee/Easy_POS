@@ -21,7 +21,6 @@
 
 package com.example.pos_moneylist.ui.home.receiptArea
 
-import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,6 +44,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.R
+import com.example.pos_moneylist.ui.visualtransformations.CurrencyAmountInputVisualTransformation
 
 @Composable
 fun CheckoutDialog(
@@ -64,36 +64,48 @@ fun CheckoutDialog(
     AlertDialog(onDismissRequest = onDismissRequest, confirmButton = {
         TextButton(onClick = onClickPayButton) {
             Text(
-                text = stringResource(id = R.string.checkout_button),
-                color = Color(0xFF3C8B40)
+                text = stringResource(id = R.string.checkout_button), color = Color(0xFF3C8B40)
             )
         }
     }, dismissButton = {
         TextButton(onClick = onClickDismissButton) {
             Text(text = stringResource(id = R.string.button_cancel), color = Color.Red)
         }
-    }, title = { Text(text = stringResource(R.string.change)) },
-        text = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                TextField(value = changeInput, onValueChange = { newValue ->
+    }, title = { Text(text = stringResource(R.string.change)) }, text = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            TextField(value = changeInput,
+                onValueChange = { newValue ->
                     changeInput = newValue
-                    changeOutput = ((newValue.toFloat() / 100.00f) - total)
-                }, visualTransformation = CurrencyAmountInputVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                    label = { Text(text = stringResource(R.string.given)) })
-                Spacer(modifier = Modifier.size(30.dp))
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.change) + ":",
-                        fontSize = 25.sp
-                    )
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Text(
-                        text = String.format("%.2f EUR", changeOutput),
-                        fontSize = 25.sp
-                    )
-                }
-
+                    changeOutput = try {
+                        ((newValue.toFloat() / 100.00f) - total)
+                    } catch (_: NumberFormatException) {
+                        0f
+                    }
+                },
+                visualTransformation = CurrencyAmountInputVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                label = { Text(text = stringResource(R.string.given)) })
+            Spacer(modifier = Modifier.size(30.dp))
+            Row {
+                Text(
+                    text = stringResource(id = R.string.price) + ":", fontSize = 25.sp
+                )
+                Spacer(modifier = Modifier.size(20.dp))
+                Text(
+                    text = String.format("%.2f EUR", total), fontSize = 25.sp
+                )
             }
-        })
+            Spacer(modifier = Modifier.size(30.dp))
+            Row {
+                Text(
+                    text = stringResource(id = R.string.change) + ":", fontSize = 25.sp
+                )
+                Spacer(modifier = Modifier.size(20.dp))
+                Text(
+                    text = String.format("%.2f EUR", changeOutput), fontSize = 25.sp
+                )
+            }
+
+        }
+    })
 }

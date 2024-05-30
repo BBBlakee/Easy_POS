@@ -21,7 +21,6 @@
 
 package com.example.pos_moneylist.ui.productListsScreen.productDetailsAndEditScreen
 
-import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,6 +66,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
+import com.example.pos_moneylist.ui.visualtransformations.CurrencyAmountInputVisualTransformation
 
 @Composable
 fun ProductDetailsAndEditDialog(
@@ -129,7 +129,7 @@ fun ProductDetailsAndEditDialog(
 
                 //Product price
                 OutlinedTextField(
-                    label = { Text(text = stringResource(R.string.add_product_price)) },
+                    label = { Text(text = stringResource(R.string.price)) },
                     value = productPrice,
                     onValueChange = { price ->
                         changesMade = true

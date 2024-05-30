@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Simple POS</string>
-    <string name="add_product_price">Price</string>
+    <string name="price">Price</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_confirm">Confirm</string>
     <string name="empty_list">No items in list</string>
@@ -18,6 +18,6 @@
     <string name="edit_list_title">Information</string>
     <string name="add_list">Add list</string>
     <string name="add_product_to_1s">Add product to %1s</string>
-    <string name="change">change</string>
-    <string name="given">given</string>
+    <string name="change">Change</string>
+    <string name="given">Given</string>
 </resources>

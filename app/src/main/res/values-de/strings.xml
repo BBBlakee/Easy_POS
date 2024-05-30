@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_product_price">Preis</string>
+    <string name="price">Preis</string>
     <string name="button_cancel">Abbrechen</string>
     <string name="button_confirm">Bestätigen</string>
     <string name="empty_list">Keine Produkte in der Liste</string>

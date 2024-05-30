@@ -21,7 +21,6 @@
 
 package com.example.pos_moneylist.ui.productListsScreen.addProductScreen
 
-import CurrencyAmountInputVisualTransformation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,6 +62,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.R
 import com.example.pos_moneylist.data.productList.Product
+import com.example.pos_moneylist.ui.visualtransformations.CurrencyAmountInputVisualTransformation
 
 /**
  * Dialog if a new product should be added to the product list. The dialog takes the name, price and
@@ -125,7 +125,7 @@ fun AddProductDialog(
 
                 //Product price
                 OutlinedTextField(
-                    label = { Text(text = stringResource(R.string.add_product_price)) },
+                    label = { Text(text = stringResource(R.string.price)) },
                     value = productPrice,
                     onValueChange = { price ->
                         priceIsValid = try {

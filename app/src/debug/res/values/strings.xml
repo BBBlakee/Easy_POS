@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Simple POS - Debug</string>
-    <string name="add_product_price" translatable="false">Price</string>
+    <string name="price" translatable="false">Price</string>
     <string name="button_cancel" translatable="false">Cancel</string>
     <string name="button_confirm" translatable="false">Confirm</string>
     <string name="empty_list" translatable="false">No items in list</string>
