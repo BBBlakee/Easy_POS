@@ -37,9 +37,9 @@ class AboutScreenViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val bufferedReader = context.assets.open("licenses/PaperDB").bufferedReader()
-                val name = bufferedReader.readLine()
-                val link = bufferedReader.readLine()
-                val text = bufferedReader.readText()
+                val name = bufferedReader.readLine() // First line of the license is the name
+                val link = bufferedReader.readLine() // Seconed line of the license is the link
+                val text = bufferedReader.readText() // The rest of the license is the text
                 bufferedReader.close()
                 launch(Dispatchers.Main) {
                     license.value = license.value.copy(

@@ -61,7 +61,7 @@ fun HomeScreen(
             Modifier.weight(0.6f)
         ) {
             ProductArea(
-                productAreaViewModel = productAreaViewModel,
+                viewModel = productAreaViewModel,
                 onProductButtonClicked = { saleItem ->
                     receiptAreaViewModel.addSaleItem(
                         saleItem

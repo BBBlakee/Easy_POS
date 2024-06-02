@@ -58,15 +58,15 @@ import com.example.pos_moneylist.data.saleItemList.SaleItem
 @Composable
 fun ProductArea(
     modifier: Modifier = Modifier,
-    productAreaViewModel: ProductAreaViewModel,
+    viewModel: ProductAreaViewModel,
     gridColumns: Int = 2,
     onProductButtonClicked: (SaleItem) -> Unit,
 ) {
 
-    val productLists = remember { productAreaViewModel.productLists }
+    val productLists = remember { viewModel.productLists }
     var selectedListIndex by remember { mutableIntStateOf(0) }
 
-    productAreaViewModel.sortLists()
+    viewModel.sortLists()
 
     var showProductList: Boolean by remember { mutableStateOf(false) }
     showProductList = productLists.isNotEmpty()
@@ -93,7 +93,7 @@ fun ProductArea(
                     key = { index: Int, item: ProductList -> item.name + index.toString() }) { index, list ->
                     OutlinedButton(
                         onClick = {
-                            selectedListIndex = productAreaViewModel.getListIndex(list.name)
+                            selectedListIndex = viewModel.getListIndex(list.name)
                         },
                         border = if (selectedListIndex == index) BorderStroke(
                             width = 3.dp, color = Color.Black

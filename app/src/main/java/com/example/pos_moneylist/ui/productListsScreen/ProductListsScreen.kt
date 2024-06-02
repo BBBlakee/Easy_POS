@@ -53,8 +53,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,27 +75,25 @@ import com.example.pos_moneylist.ui.productListsScreen.addProductScreen.AddProdu
 import com.example.pos_moneylist.ui.productListsScreen.productDetailsAndEditScreen.ProductDetailsAndEditDialog
 
 object DestinationSettings : NavigationDestination {
+
     override val route: String = "settings"
 }
 
 @Composable
-fun SettingsScreen(
-    productListsScreenViewModel: ProductListsScreenViewModel,
-    innerPadding: PaddingValues,
+fun ProductListScreen(
+    viewModel: ProductListsScreenViewModel,
+    padding: PaddingValues,
 ) {
 
-    val productLists = remember { productListsScreenViewModel.productLists }
+    val uiState by viewModel.uiState.collectAsState()
+
+    val productLists = remember { viewModel.productLists }
     var productDetails: Product = remember { Product("No product", 0.00f, Color.Black) }
 
-    var showProductList: Boolean by remember { mutableStateOf(false) }
     var showAddProductScreen: Boolean by remember { mutableStateOf(false) }
     var showProductDetailsScreen: Boolean by remember { mutableStateOf(false) }
     var showAddListScreen: Boolean by remember { mutableStateOf(false) }
     var showEditListScreen: Boolean by remember { mutableStateOf(false) }
-
-    var selectedListIndex by remember { mutableIntStateOf(0) }
-
-    showProductList = productLists.isNotEmpty()
 
     Scaffold(
         floatingActionButton = {
@@ -109,7 +107,7 @@ fun SettingsScreen(
                     )
                     Text(text = stringResource(R.string.add_list))
                 }
-                if (showProductList) {
+                if (uiState.currProductList != null) {
                     ExtendedFloatingActionButton(
                         onClick = { showAddProductScreen = true }, modifier = Modifier.padding(5.dp)
                     ) {
@@ -119,17 +117,18 @@ fun SettingsScreen(
                         Text(
                             text = String.format(
                                 stringResource(R.string.add_product_to_1s),
-                                productLists[selectedListIndex].name
+                                uiState.currProductList?.name
                             )
                         )
                     }
                 }
             }
 
-        }, modifier = Modifier.padding(innerPadding)
+        }, modifier = Modifier.padding(padding)
     ) { innerPadding ->
-        if (showProductList) {
-            productListsScreenViewModel.sortLists()
+
+        // If list is empty show empty list message - see elvis operator at the end of this block
+        uiState.currProductList?.let { productList ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -147,18 +146,17 @@ fun SettingsScreen(
                         key = { index: Int, item: ProductList -> item.name + index.toString() }) { index, list ->
                         OutlinedButton(
                             onClick = {
-                                if (selectedListIndex == index) showEditListScreen = true
-                                selectedListIndex =
-                                    productListsScreenViewModel.getListIndex(list.name)
-                            },
-                            border = if (selectedListIndex == index) BorderStroke(
-                                width = 3.dp, color = Color.Black
-                            ) else BorderStroke(width = 1.dp, color = Color.LightGray),
-                            modifier = Modifier.padding(5.dp)
+                                if (uiState.currListIndex == index) showEditListScreen = true
+                                viewModel.setCurrentListIndex(viewModel.getListIndex(list.name))
+                            }, border = if (uiState.currListIndex == index) {
+                                BorderStroke(width = 3.dp, color = Color.Black)
+                            } else {
+                                BorderStroke(width = 1.dp, color = Color.LightGray)
+                            }, modifier = Modifier.padding(5.dp)
                         ) {
                             Text(
                                 text = list.name,
-                                fontWeight = if (selectedListIndex == index) FontWeight.Bold else FontWeight.Normal
+                                fontWeight = if (uiState.currListIndex == index) FontWeight.Bold else FontWeight.Normal
                             )
                             Spacer(Modifier.size(10.dp))
                             Icon(
@@ -180,7 +178,8 @@ fun SettingsScreen(
                             .padding(horizontal = 10.dp)
                             .weight(1f)
                     ) {
-                        items(items = productLists[selectedListIndex].productList,
+                        items(
+                            items = productList.productList,
                             key = { it.name }) { product: Product ->
                             ListItem(headlineContent = {
                                 Text(
@@ -209,32 +208,29 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.weight(0.5f))
                 }
             }
-
-        } else {
-            Box(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.empty_list), fontSize = 60.sp
-                )
-            }
+        } ?: // Elvis from beginning of this block - uiState.currProductList?.let
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.empty_list), fontSize = 60.sp
+            )
         }
 
         if (showAddProductScreen) {
             AddProductDialog(onDismissRequest = { showAddProductScreen = false },
                 onCancel = { showAddProductScreen = false },
                 onConfirm = { product ->
-                    productListsScreenViewModel.addProduct(selectedListIndex, product = product)
-                    productListsScreenViewModel.sortLists()
+                    viewModel.addProduct(uiState.currListIndex, product = product)
                     Controller.saveProductLists()
                     showAddProductScreen = false
                 },
                 onNameChange = { product ->
-                    productListsScreenViewModel.containsProduct(
-                        selectedListIndex, product = product
+                    viewModel.containsProduct(
+                        uiState.currListIndex, product = product
                     )
                 })
         }
@@ -244,19 +240,17 @@ fun SettingsScreen(
                 onDismissRequest = { showProductDetailsScreen = false },
                 onCancel = { showProductDetailsScreen = false },
                 onConfirm = {
-                    productListsScreenViewModel.sortLists()
                     Controller.saveProductLists()
                     showProductDetailsScreen = false
                 },
                 onNameChange = { product ->
-                    productListsScreenViewModel.containsProduct(
-                        selectedListIndex, product = product
+                    viewModel.containsProduct(
+                        uiState.currListIndex, product = product
                     )
                 },
                 onDelete = { product ->
 
-                    productListsScreenViewModel.removeProduct(selectedListIndex, product)
-                    productListsScreenViewModel.sortLists()
+                    viewModel.removeProduct(uiState.currListIndex, product)
                     Controller.saveProductLists()
                     showProductDetailsScreen = false
                 },
@@ -267,19 +261,18 @@ fun SettingsScreen(
         if (showAddListScreen) {
             AddProductListScreen(onDismissRequest = { showAddListScreen = false },
                 onConfirmButton = { listName ->
-                    productListsScreenViewModel.addList(listName = listName)
-                    productListsScreenViewModel.sortLists()
+                    viewModel.addList(listName = listName)
                     Controller.saveProductLists()
                     showAddListScreen = false
                 },
                 onDismissButton = { showAddListScreen = false },
-                onValueChange = { listName -> !productListsScreenViewModel.containsList(listName) })
+                onValueChange = { listName -> !viewModel.containsList(listName) })
         }
 
         if (showEditListScreen) {
 
             var currListName: String by remember {
-                mutableStateOf(productLists[selectedListIndex].name)
+                mutableStateOf(productLists[uiState.currListIndex].name)
             }
             var isNewNameValid: Boolean by remember {
                 mutableStateOf(true)
@@ -309,8 +302,7 @@ fun SettingsScreen(
                         //Content
                         OutlinedTextField(value = currListName,
                             onValueChange = {
-                                isNewNameValid =
-                                    !productListsScreenViewModel.containsList(it) and it.isNotEmpty()
+                                isNewNameValid = !viewModel.containsList(it) and it.isNotEmpty()
                                 changesMade = true
                                 currListName = it
                             },
@@ -341,9 +333,8 @@ fun SettingsScreen(
                             }
                             //Confirm button
                             TextButton(onClick = {
-                                Controller.deleteProductList(productLists[selectedListIndex].name)
-                                productLists[selectedListIndex].name = currListName
-                                productListsScreenViewModel.sortLists()
+                                Controller.deleteProductList(productLists[uiState.currListIndex].name)
+                                productLists[uiState.currListIndex].name = currListName
                                 Controller.saveProductLists()
                                 showEditListScreen = false
                             }, enabled = isNewNameValid and changesMade) {
@@ -354,37 +345,29 @@ fun SettingsScreen(
                 }
             }
             if (showDeleteWarning) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteWarning = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            Controller.deleteProductList(productLists[selectedListIndex].name)
-                            productListsScreenViewModel.removeList(selectedListIndex)
-                            selectedListIndex = 0
-                            productListsScreenViewModel.sortLists()
-                            Controller.saveProductLists()
-                            showEditListScreen = false
-                            showDeleteWarning = false
-                        }) {
-                            Text(
-                                text = stringResource(id = R.string.button_delete),
-                                color = Color.Red
-                            )
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showDeleteWarning = false }) {
-                            Text(text = stringResource(id = R.string.button_cancel))
-                        }
-                    },
-                    title = {
+                AlertDialog(onDismissRequest = { showDeleteWarning = false }, confirmButton = {
+                    TextButton(onClick = {
+                        Controller.deleteProductList(productLists[uiState.currListIndex].name)
+                        viewModel.removeList(uiState.currListIndex)
+                        Controller.saveProductLists()
+                        showEditListScreen = false
+                        showDeleteWarning = false
+                    }) {
                         Text(
-                            text = String.format(
-                                "Really delete the list %1s",
-                                productLists[selectedListIndex].name
-                            )
+                            text = stringResource(id = R.string.button_delete), color = Color.Red
                         )
-                    })
+                    }
+                }, dismissButton = {
+                    TextButton(onClick = { showDeleteWarning = false }) {
+                        Text(text = stringResource(id = R.string.button_cancel))
+                    }
+                }, title = {
+                    Text(
+                        text = String.format(
+                            "Really delete the list %1s", productLists[uiState.currListIndex].name
+                        )
+                    )
+                })
             }
         }
 

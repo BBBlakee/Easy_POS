@@ -25,23 +25,67 @@ import androidx.lifecycle.ViewModel
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.data.productList.Product
 import com.example.pos_moneylist.data.productList.ProductList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class ProductListsScreenViewModel : ViewModel() {
+
     val productLists = Controller.productLists
+
+    private val _uiState = MutableStateFlow(
+        ProductListsScreenUiState(currProductList = productLists.firstOrNull(),
+            currListIndex = 0,
+            productListNames = productLists.map { list -> list.name })
+    )
+    val uiState = _uiState.asStateFlow()
 
     fun getListIndex(listName: String): Int {
         return productLists.indexOfFirst { list -> list.name == listName }
+    }
+
+    fun setCurrentListIndex(listIndex: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currListIndex = listIndex.coerceAtLeast(0), currProductList = try {
+                    productLists[listIndex.coerceAtLeast(0)]
+                } catch (e: IndexOutOfBoundsException) {
+                    null
+                }
+            )
+        }
     }
 
     fun addList(listName: String): Boolean {
         if (containsList(listName = listName)) {
             return false
         }
-        return productLists.add(ProductList(listName))
+        productLists.add(ProductList(listName))
+        sortLists()
+        _uiState.update { currentState ->
+            currentState.copy(productListNames = productLists.map { list -> list.name })
+        }
+        setCurrentListIndex(getListIndex(listName))
+        return true
     }
 
     fun containsList(listName: String): Boolean {
         return productLists.indexOfFirst { list -> list.name == listName } != -1
+    }
+
+    fun removeList(listIndex: Int) {
+        productLists.removeAt(listIndex)
+
+        _uiState.update { currentState ->
+            currentState.copy(productListNames = productLists.map { list -> list.name })
+        }
+
+        setCurrentListIndex(listIndex - 1)
+    }
+
+    private fun sortLists() {
+        productLists.forEach { list -> list.sortList() }
+        productLists.sortWith(compareBy { it.name })
     }
 
     fun addProduct(
@@ -67,13 +111,11 @@ class ProductListsScreenViewModel : ViewModel() {
     ) {
         productLists[listIndex].remove(product)
     }
-
-    fun removeList(listIndex: Int) {
-        productLists.removeAt(listIndex)
-    }
-
-    fun sortLists() {
-        productLists.forEach { list -> list.sortList() }
-        productLists.sortWith(compareBy { it.name })
-    }
 }
+
+data class ProductListsScreenUiState(
+    //data
+    val currProductList: ProductList? = null,
+    val currListIndex: Int = 0,
+    val productListNames: List<String> = emptyList(),
+)

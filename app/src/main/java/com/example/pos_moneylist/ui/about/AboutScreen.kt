@@ -52,16 +52,16 @@ object DestinationAbout : NavigationDestination {
 
 @Composable
 fun AboutScreen(
-    aboutScreenViewModel: AboutScreenViewModel,
+    viewModel: AboutScreenViewModel,
     innerPadding: PaddingValues,
 ) {
 
     val context: Context = LocalContext.current
 
-    val license by remember { aboutScreenViewModel.license }
-    aboutScreenViewModel.loadLicenses(context)
+    val license by remember { viewModel.license }
+    viewModel.loadLicenses(context)
 
-    val appVersion: String = aboutScreenViewModel.getAppVersion(context)
+    val appVersion: String = viewModel.getAppVersion(context)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
