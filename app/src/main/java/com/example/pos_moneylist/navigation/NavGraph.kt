@@ -55,8 +55,8 @@ import com.example.pos_moneylist.ui.home.HomeScreen
 import com.example.pos_moneylist.ui.home.productArea.ProductAreaViewModel
 import com.example.pos_moneylist.ui.home.receiptArea.ReceiptAreaViewModel
 import com.example.pos_moneylist.ui.productListsScreen.DestinationSettings
+import com.example.pos_moneylist.ui.productListsScreen.ProductListScreen
 import com.example.pos_moneylist.ui.productListsScreen.ProductListsScreenViewModel
-import com.example.pos_moneylist.ui.productListsScreen.SettingsScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -85,8 +85,7 @@ fun MoneyListNavHost(
                         icon = Icons.Outlined.Home,
                         iconSelected = Icons.Filled.Home
                     ), DrawerItem(
-                        id = "settings",
-                        name = stringResource(R.string.title_Lists_screen),
+                        id = "settings", name = stringResource(R.string.title_lists_screen),
                         icon = Icons.AutoMirrored.Outlined.List,
                         iconSelected = Icons.AutoMirrored.Filled.List
                     ), DrawerItem(
@@ -135,14 +134,13 @@ fun MoneyListNavHost(
 
                 composable(route = DestinationAbout.route) {
                     AboutScreen(
-                        aboutScreenViewModel = aboutScreenViewModel, innerPadding = innerPadding
+                        viewModel = aboutScreenViewModel, innerPadding = innerPadding
                     )
                 }
 
                 composable(route = DestinationSettings.route) {
-                    SettingsScreen(
-                        productListsScreenViewModel = productListsScreenViewModel,
-                        innerPadding = innerPadding
+                    ProductListScreen(
+                        viewModel = productListsScreenViewModel, padding = innerPadding
                     )
                 }
             }

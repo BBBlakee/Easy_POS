@@ -7,7 +7,7 @@
     <string name="color">Farbe</string>
     <string name="button_delete">Löschen</string>
     <string name="title_about_screen">Info</string>
-    <string name="title_Lists_screen">Produktlisten</string>
+    <string name="title_lists_screen">Produktlisten</string>
     <string name="drawer_title">Menü</string>
     <string name="drawer_item_home">Start</string>
     <string name="checkout_button">Bezahlen</string>
