@@ -21,6 +21,7 @@
 
 package com.example.pos_moneylist.ui.productListsScreen
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.pos_moneylist.Controller
 import com.example.pos_moneylist.data.productList.Product
@@ -112,6 +113,13 @@ class ProductListsScreenViewModel : ViewModel() {
         productLists[listIndex].remove(product)
     }
 
+    fun setDetailedProduct(product: Product) {
+        _uiState.update { currentState ->
+            currentState.copy(detailedProduct = product)
+        }
+    }
+
+    // flags ---------------------------------------------------------------------------------------
     fun showAddProductScreen() {
         _uiState.update { currentState ->
             currentState.copy(isAddProductScreenVisible = true)
@@ -166,6 +174,7 @@ data class ProductListsScreenUiState(
     val currProductList: ProductList? = null,
     val currListIndex: Int = 0,
     val productListNames: List<String> = emptyList(),
+    val detailedProduct: Product = Product("No product", -1f, Color.Black),
     // flags
     val isAddProductScreenVisible: Boolean = false,
     val isProductDetailsScreenVisible: Boolean = false,

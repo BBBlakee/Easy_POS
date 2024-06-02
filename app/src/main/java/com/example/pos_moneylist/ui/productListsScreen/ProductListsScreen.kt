@@ -88,7 +88,6 @@ fun ProductListScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val productLists = remember { viewModel.productLists }
-    var productDetails: Product = remember { Product("No product", 0.00f, Color.Black) }
 
     Scaffold(
         floatingActionButton = {
@@ -195,7 +194,7 @@ fun ProductListScreen(
                             }, modifier = Modifier
                                 .padding(vertical = 5.dp)
                                 .clickable {
-                                    productDetails = product
+                                    viewModel.setDetailedProduct(product)
                                     viewModel.showProductDetailsScreen()
                                 })
                             HorizontalDivider(thickness = 1.dp)
@@ -250,7 +249,7 @@ fun ProductListScreen(
                     Controller.saveProductLists()
                     viewModel.hideProductDetailsScreen()
                 },
-                product = productDetails,
+                product = uiState.detailedProduct,
             )
         }
 
