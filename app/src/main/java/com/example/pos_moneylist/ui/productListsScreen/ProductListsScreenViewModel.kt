@@ -111,11 +111,64 @@ class ProductListsScreenViewModel : ViewModel() {
     ) {
         productLists[listIndex].remove(product)
     }
+
+    fun showAddProductScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isAddProductScreenVisible = true)
+        }
+    }
+
+    fun hideAddProductScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isAddProductScreenVisible = false)
+        }
+    }
+
+    fun showProductDetailsScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isProductDetailsScreenVisible = true)
+        }
+    }
+
+    fun hideProductDetailsScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isProductDetailsScreenVisible = false)
+        }
+    }
+
+    fun showAddListScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isAddListScreenVisible = true)
+        }
+    }
+
+    fun hideAddListScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isAddListScreenVisible = false)
+        }
+    }
+
+    fun showEditListScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isEditListScreenVisible = true)
+        }
+    }
+
+    fun hideEditListScreen() {
+        _uiState.update { currentState ->
+            currentState.copy(isEditListScreenVisible = false)
+        }
+    }
 }
 
 data class ProductListsScreenUiState(
-    //data
+    // data
     val currProductList: ProductList? = null,
     val currListIndex: Int = 0,
     val productListNames: List<String> = emptyList(),
+    // flags
+    val isAddProductScreenVisible: Boolean = false,
+    val isProductDetailsScreenVisible: Boolean = false,
+    val isAddListScreenVisible: Boolean = false,
+    val isEditListScreenVisible: Boolean = false
 )

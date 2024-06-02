@@ -90,17 +90,12 @@ fun ProductListScreen(
     val productLists = remember { viewModel.productLists }
     var productDetails: Product = remember { Product("No product", 0.00f, Color.Black) }
 
-    var showAddProductScreen: Boolean by remember { mutableStateOf(false) }
-    var showProductDetailsScreen: Boolean by remember { mutableStateOf(false) }
-    var showAddListScreen: Boolean by remember { mutableStateOf(false) }
-    var showEditListScreen: Boolean by remember { mutableStateOf(false) }
-
     Scaffold(
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.End) {
 
                 ExtendedFloatingActionButton(
-                    onClick = { showAddListScreen = true }, modifier = Modifier.padding(5.dp)
+                    onClick = { viewModel.showAddListScreen() }, modifier = Modifier.padding(5.dp)
                 ) {
                     Icon(
                         Icons.TwoTone.Add, contentDescription = "Add list button"
@@ -109,7 +104,8 @@ fun ProductListScreen(
                 }
                 if (uiState.currProductList != null) {
                     ExtendedFloatingActionButton(
-                        onClick = { showAddProductScreen = true }, modifier = Modifier.padding(5.dp)
+                        onClick = { viewModel.showAddProductScreen() },
+                        modifier = Modifier.padding(5.dp)
                     ) {
                         Icon(
                             Icons.TwoTone.Add, contentDescription = "Add product button"
@@ -146,7 +142,7 @@ fun ProductListScreen(
                         key = { index: Int, item: ProductList -> item.name + index.toString() }) { index, list ->
                         OutlinedButton(
                             onClick = {
-                                if (uiState.currListIndex == index) showEditListScreen = true
+                                if (uiState.currListIndex == index) viewModel.showEditListScreen()
                                 viewModel.setCurrentListIndex(viewModel.getListIndex(list.name))
                             }, border = if (uiState.currListIndex == index) {
                                 BorderStroke(width = 3.dp, color = Color.Black)
@@ -200,7 +196,7 @@ fun ProductListScreen(
                                 .padding(vertical = 5.dp)
                                 .clickable {
                                     productDetails = product
-                                    showProductDetailsScreen = true
+                                    viewModel.showProductDetailsScreen()
                                 })
                             HorizontalDivider(thickness = 1.dp)
                         }
@@ -220,13 +216,13 @@ fun ProductListScreen(
             )
         }
 
-        if (showAddProductScreen) {
-            AddProductDialog(onDismissRequest = { showAddProductScreen = false },
-                onCancel = { showAddProductScreen = false },
+        if (uiState.isAddProductScreenVisible) {
+            AddProductDialog(onDismissRequest = { viewModel.hideAddProductScreen() },
+                onCancel = { viewModel.hideAddProductScreen() },
                 onConfirm = { product ->
                     viewModel.addProduct(uiState.currListIndex, product = product)
                     Controller.saveProductLists()
-                    showAddProductScreen = false
+                    viewModel.hideAddProductScreen()
                 },
                 onNameChange = { product ->
                     viewModel.containsProduct(
@@ -235,13 +231,13 @@ fun ProductListScreen(
                 })
         }
 
-        if (showProductDetailsScreen) {
+        if (uiState.isProductDetailsScreenVisible) {
             ProductDetailsAndEditDialog(
-                onDismissRequest = { showProductDetailsScreen = false },
-                onCancel = { showProductDetailsScreen = false },
+                onDismissRequest = { viewModel.hideProductDetailsScreen() },
+                onCancel = { viewModel.hideProductDetailsScreen() },
                 onConfirm = {
                     Controller.saveProductLists()
-                    showProductDetailsScreen = false
+                    viewModel.hideProductDetailsScreen()
                 },
                 onNameChange = { product ->
                     viewModel.containsProduct(
@@ -252,24 +248,23 @@ fun ProductListScreen(
 
                     viewModel.removeProduct(uiState.currListIndex, product)
                     Controller.saveProductLists()
-                    showProductDetailsScreen = false
+                    viewModel.hideProductDetailsScreen()
                 },
                 product = productDetails,
             )
         }
 
-        if (showAddListScreen) {
-            AddProductListScreen(onDismissRequest = { showAddListScreen = false },
+        if (uiState.isAddListScreenVisible) {
+            AddProductListScreen(onDismissRequest = { viewModel.hideAddListScreen() },
                 onConfirmButton = { listName ->
                     viewModel.addList(listName = listName)
                     Controller.saveProductLists()
-                    showAddListScreen = false
-                },
-                onDismissButton = { showAddListScreen = false },
+                    viewModel.hideAddListScreen()
+                }, onDismissButton = { viewModel.hideAddListScreen() },
                 onValueChange = { listName -> !viewModel.containsList(listName) })
         }
 
-        if (showEditListScreen) {
+        if (uiState.isEditListScreenVisible) {
 
             var currListName: String by remember {
                 mutableStateOf(productLists[uiState.currListIndex].name)
@@ -284,7 +279,7 @@ fun ProductListScreen(
                 mutableStateOf(false)
             }
 
-            Dialog(onDismissRequest = { showEditListScreen = false }) {
+            Dialog(onDismissRequest = { viewModel.hideEditListScreen() }) {
                 Card(modifier = Modifier.fillMaxWidth(0.6f)) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -328,7 +323,7 @@ fun ProductListScreen(
                             Spacer(modifier = Modifier.size(60.dp))
 
                             //Cancel button
-                            TextButton(onClick = { showEditListScreen = false }) {
+                            TextButton(onClick = { viewModel.hideEditListScreen() }) {
                                 Text(text = stringResource(id = R.string.button_cancel))
                             }
                             //Confirm button
@@ -336,7 +331,7 @@ fun ProductListScreen(
                                 Controller.deleteProductList(productLists[uiState.currListIndex].name)
                                 productLists[uiState.currListIndex].name = currListName
                                 Controller.saveProductLists()
-                                showEditListScreen = false
+                                viewModel.hideEditListScreen()
                             }, enabled = isNewNameValid and changesMade) {
                                 Text(text = stringResource(id = R.string.button_confirm))
                             }
@@ -350,7 +345,7 @@ fun ProductListScreen(
                         Controller.deleteProductList(productLists[uiState.currListIndex].name)
                         viewModel.removeList(uiState.currListIndex)
                         Controller.saveProductLists()
-                        showEditListScreen = false
+                        viewModel.hideEditListScreen()
                         showDeleteWarning = false
                     }) {
                         Text(
