@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class your.app.data.model.** { *; }
+-keep class * implements java.io.Serializable { *; }
+-keep enum your.app.data.model.** { *; }
+-keep class kotlin.collections.* { *; }
