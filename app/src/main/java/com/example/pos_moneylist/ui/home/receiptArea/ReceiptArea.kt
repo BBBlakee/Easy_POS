@@ -106,7 +106,7 @@ fun ReceiptArea(
                 )
 
                 Button(
-                    onClick = { showCheckoutView = true },
+                    onClick = { showCheckoutView = saleItemList.isNotEmpty() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8B40)),
                     modifier = Modifier
                         .fillMaxWidth()

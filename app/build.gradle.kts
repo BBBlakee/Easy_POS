@@ -1,6 +1,6 @@
 val versionMajor = 1
-val versionMinor = 0
-val versionPatch = 4
+val versionMinor = 1
+val versionPatch = 0
 
 plugins {
     alias(libs.plugins.android.application)
