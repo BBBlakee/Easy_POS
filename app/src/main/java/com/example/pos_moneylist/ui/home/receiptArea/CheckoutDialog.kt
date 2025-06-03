@@ -21,6 +21,7 @@
 
 package com.example.pos_moneylist.ui.home.receiptArea
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -44,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pos_moneylist.R
@@ -88,53 +91,85 @@ fun CheckoutDialog(
         },
         title = { Text(text = stringResource(R.string.change), fontWeight = FontWeight.Bold) },
         text = {
-
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Spacer(modifier = Modifier.size(30.dp))
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.price) + ":",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Text(
-                        text = String.format("%.2f EUR", total),
-                        fontSize = 30.sp,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    TextField(
+                        textStyle = TextStyle(fontSize = 20.sp),
+                        value = String.format("%.2f", total),
+                        readOnly = true,
+                        onValueChange = {},
+                        singleLine = true,
+                        suffix = { Text(text = "EUR", fontSize = 20.sp) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.price),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        })
+                }
+                Spacer(modifier = Modifier.size(35.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold),
+                        value = changeInput,
+                        singleLine = true,
+                        suffix = {
+                            Text(
+                                text = "EUR", fontSize = 25.sp, fontWeight = FontWeight.Bold
+                            )
+                        },
+                        onValueChange = { newValue ->
+                            changeInput = newValue
+                            changeOutput = try {
+                                ((newValue.toFloat() / 100.00f) - total)
+                            } catch (_: NumberFormatException) {
+                                0f
+                            }
+                        },
+                        visualTransformation = CurrencyAmountInputVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = {
+                            Text(
+                                text = stringResource(R.string.given),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     )
                 }
-                Spacer(modifier = Modifier.size(30.dp))
-                TextField(
-                    textStyle = TextStyle(fontSize = 35.sp),
-                    value = changeInput,
-                    onValueChange = { newValue ->
-                        changeInput = newValue
-                        changeOutput = try {
-                            ((newValue.toFloat() / 100.00f) - total)
-                        } catch (_: NumberFormatException) {
-                            0f
-                        }
-                    },
-                    visualTransformation = CurrencyAmountInputVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(text = stringResource(R.string.given), fontSize = 30.sp) })
-                Spacer(modifier = Modifier.size(30.dp))
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.change) + ":", fontSize = 25.sp
-                    )
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Text(
-                        text = String.format("%.2f EUR", changeOutput), fontSize = 25.sp
-                    )
+                Spacer(modifier = Modifier.size(35.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    TextField(
+                        textStyle = TextStyle(fontSize = 20.sp),
+                        value = String.format("%.2f", changeOutput),
+                        readOnly = true,
+                        onValueChange = {},
+                        singleLine = true,
+                        suffix = { Text(text = "EUR", fontSize = 20.sp) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.change),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        })
                 }
-                Spacer(modifier = Modifier.size(30.dp))
-
             }
         })
 }
