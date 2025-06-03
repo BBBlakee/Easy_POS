@@ -21,12 +21,17 @@
 
 package com.example.pos_moneylist.ui.home.receiptArea
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -40,6 +45,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +56,7 @@ import com.example.pos_moneylist.ui.visualtransformations.CurrencyAmountInputVis
 @Composable
 fun CheckoutDialog(
     total: Float,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit = {},
     onClickPayButton: () -> Unit,
     onClickDismissButton: () -> Unit,
 ) {
@@ -61,51 +68,108 @@ fun CheckoutDialog(
         mutableFloatStateOf(0.00f)
     }
 
-    AlertDialog(onDismissRequest = onDismissRequest, confirmButton = {
-        TextButton(onClick = onClickPayButton) {
-            Text(
-                text = stringResource(id = R.string.checkout_button), color = Color(0xFF3C8B40)
-            )
-        }
-    }, dismissButton = {
-        TextButton(onClick = onClickDismissButton) {
-            Text(text = stringResource(id = R.string.button_cancel), color = Color.Red)
-        }
-    }, title = { Text(text = stringResource(R.string.change)) }, text = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            TextField(value = changeInput,
-                onValueChange = { newValue ->
-                    changeInput = newValue
-                    changeOutput = try {
-                        ((newValue.toFloat() / 100.00f) - total)
-                    } catch (_: NumberFormatException) {
-                        0f
-                    }
-                },
-                visualTransformation = CurrencyAmountInputVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text(text = stringResource(R.string.given)) })
-            Spacer(modifier = Modifier.size(30.dp))
-            Row {
+    AlertDialog(
+        modifier = Modifier.fillMaxWidth(),
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(onClick = onClickPayButton) {
                 Text(
-                    text = stringResource(id = R.string.price) + ":", fontSize = 25.sp
-                )
-                Spacer(modifier = Modifier.size(20.dp))
-                Text(
-                    text = String.format("%.2f EUR", total), fontSize = 25.sp
+                    text = stringResource(id = R.string.checkout_button),
+                    color = Color(0xFF3C8B40),
+                    fontSize = 25.sp
                 )
             }
-            Spacer(modifier = Modifier.size(30.dp))
-            Row {
+        },
+        dismissButton = {
+            TextButton(onClick = onClickDismissButton) {
                 Text(
-                    text = stringResource(id = R.string.change) + ":", fontSize = 25.sp
-                )
-                Spacer(modifier = Modifier.size(20.dp))
-                Text(
-                    text = String.format("%.2f EUR", changeOutput), fontSize = 25.sp
+                    text = stringResource(id = R.string.button_cancel),
+                    color = Color.Red,
+                    fontSize = 25.sp
                 )
             }
-
-        }
-    })
+        },
+        title = { Text(text = stringResource(R.string.change), fontWeight = FontWeight.Bold) },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    TextField(
+                        textStyle = TextStyle(fontSize = 20.sp),
+                        value = String.format("%.2f", total),
+                        readOnly = true,
+                        onValueChange = {},
+                        singleLine = true,
+                        suffix = { Text(text = "EUR", fontSize = 20.sp) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.price),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        })
+                }
+                Spacer(modifier = Modifier.size(35.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold),
+                        value = changeInput,
+                        singleLine = true,
+                        suffix = {
+                            Text(
+                                text = "EUR", fontSize = 25.sp, fontWeight = FontWeight.Bold
+                            )
+                        },
+                        onValueChange = { newValue ->
+                            changeInput = newValue
+                            changeOutput = try {
+                                ((newValue.toFloat() / 100.00f) - total)
+                            } catch (_: NumberFormatException) {
+                                0f
+                            }
+                        },
+                        visualTransformation = CurrencyAmountInputVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = {
+                            Text(
+                                text = stringResource(R.string.given),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.size(35.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
+                    TextField(
+                        textStyle = TextStyle(fontSize = 20.sp),
+                        value = String.format("%.2f", changeOutput),
+                        readOnly = true,
+                        onValueChange = {},
+                        singleLine = true,
+                        suffix = { Text(text = "EUR", fontSize = 20.sp) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.change),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        })
+                }
+            }
+        })
 }

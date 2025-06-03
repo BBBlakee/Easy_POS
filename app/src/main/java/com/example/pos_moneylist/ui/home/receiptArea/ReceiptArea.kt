@@ -124,7 +124,6 @@ fun ReceiptArea(
     if (showCheckoutView) {
         CheckoutDialog(
             total = total,
-            onDismissRequest = { showCheckoutView = false },
             onClickPayButton = {
                 receiptAreaViewModel.clear()
                 showCheckoutView = false
